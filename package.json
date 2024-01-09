@@ -13,5 +13,8 @@
     "nuxt": "^3.9.0",
     "vue": "^3.4.5",
     "vue-router": "^4.2.5"
+  },
+  "dependencies": {
+    "langchain": "^0.1.1"
   }
 }
