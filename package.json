@@ -15,6 +15,7 @@
     "vue-router": "^4.2.5"
   },
   "dependencies": {
+    "@langchain/openai": "^0.0.10",
     "langchain": "^0.1.1"
   }
 }
