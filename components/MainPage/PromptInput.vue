@@ -3,6 +3,18 @@ const modelValue = defineModel<string>({ required: true })
 const emit = defineEmits<{
   submit: [value: string]
 }>()
+
+function autoComplete(event: KeyboardEvent) {
+  if (event.key === 'Tab') {
+    event.preventDefault()
+
+    const textarea = event.currentTarget as HTMLTextAreaElement
+
+    if (textarea.value === '') {
+      modelValue.value = textarea.placeholder
+    }
+  }
+}
 </script>
 
 <template>
@@ -10,7 +22,9 @@ const emit = defineEmits<{
     <div class="prompt-input-wrapper">
       <div class="prompt-input-content">
         <textarea
+          @keydown="autoComplete"
           class="prompt-input-area"
+          placeholder="Something as placeholder"
           v-model="modelValue"
           maxlength="1000"
           minlength="2"
