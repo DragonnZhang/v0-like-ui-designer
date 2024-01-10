@@ -8,14 +8,14 @@ const openAIModel = new ChatOpenAI({
   temperature: 0,
   openAIApiKey: config.openaiApiKey,
   maxTokens: 500,
-  streaming: true
+  streaming: config.streaming
 })
 
 const qwen = new ChatAlibabaTongyi({
   modelName: 'qwen-max',
   temperature: 0,
   alibabaApiKey: config.qwenApiKey,
-  maxTokens: 2000
+  streaming: config.streaming
 })
 
 const wenxin = new ChatBaiduWenxin({
@@ -25,5 +25,5 @@ const wenxin = new ChatBaiduWenxin({
 })
 
 export function getModelInstance() {
-  return openAIModel
+  return qwen
 }

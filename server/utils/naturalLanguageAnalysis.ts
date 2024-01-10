@@ -4,6 +4,8 @@ import { StringOutputParser } from '@langchain/core/output_parsers'
 
 const model = getModelInstance()
 
+const config = useRuntimeConfig()
+
 export const generatePage = async (userPrompt: string) => {
   const promptTemplate = PromptTemplate.fromTemplate(
     `
@@ -27,9 +29,13 @@ export const generatePage = async (userPrompt: string) => {
 
   const chain = promptTemplate.pipe(model)
   const parser = new StringOutputParser()
-  const llmResult = await chain.pipe(parser).stream({
-    userPrompt
-  })
+  const llmResult = config.streaming
+    ? await chain.pipe(parser).stream({
+        userPrompt
+      })
+    : await chain.pipe(parser).invoke({
+        userPrompt
+      })
 
   return llmResult
 }

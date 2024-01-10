@@ -1,14 +1,21 @@
 <script setup lang="ts">
 import PromptInput from '~/components/MainPage/PromptInput.vue'
 
+const config = useRuntimeConfig()
+
 const userPrompt = ref('')
 
 const generatedHTML = ref('')
 
-async function generatePage() {
+async function getStreamResult() {
   const res = await fetch('/api/generateNewWebsite', {
     method: 'POST',
-    body: `userPrompt=${userPrompt.value}`
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      userPrompt: userPrompt.value
+    })
   })
 
   const reader = res.body?.getReader()!
@@ -28,6 +35,25 @@ async function generatePage() {
 
   if (reader) {
     read()
+  }
+}
+
+async function getDirectResult() {
+  const res = await useFetch('/api/generateNewWebsite', {
+    method: 'POST',
+    body: {
+      userPrompt: userPrompt.value
+    }
+  })
+
+  generatedHTML.value = (res.data.value as string) || ''
+}
+
+async function generatePage() {
+  if (config.streaming) {
+    getStreamResult()
+  } else {
+    getDirectResult()
   }
 }
 </script>

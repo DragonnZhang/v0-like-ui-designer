@@ -1,14 +1,18 @@
 import { generatePage } from '../utils/naturalLanguageAnalysis'
 
+const config = useRuntimeConfig()
+
 export default defineEventHandler(async (event) => {
   const { userPrompt } = await readBody(event)
 
   console.log(`Processing ${userPrompt}`)
   try {
-    const stream = await generatePage(userPrompt)
-    console.log('response', stream)
+    const res = await generatePage(userPrompt)
+    console.log('response', res)
 
-    return sendStream(event, stream)
+    return config.streaming
+      ? sendStream(event, res as ReadableStream<string>)
+      : res
   } catch (err) {
     console.log(err)
     return null
