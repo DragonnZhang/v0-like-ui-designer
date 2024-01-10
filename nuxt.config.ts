@@ -2,6 +2,16 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   runtimeConfig: {
-    openaiApiKey: ''
+    openaiApiKey: '',
+    qwenApiKey: '',
+    baiduApiKey: '',
+    baiduSecretKey: ''
+  },
+  css: ['~/assets/css/main.scss'],
+  postcss: {
+    plugins: {
+      tailwindcss: {},
+      autoprefixer: {}
+    }
   }
 })
