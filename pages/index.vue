@@ -6,14 +6,29 @@ const userPrompt = ref('')
 const generatedHTML = ref('')
 
 async function generatePage() {
-  const res = await useFetch('/api/generateNewWebsite', {
+  const res = await fetch('/api/generateNewWebsite', {
     method: 'POST',
-    body: {
-      userPrompt: userPrompt.value
-    }
+    body: `userPrompt=${userPrompt.value}`
   })
 
-  generatedHTML.value = res.data.value || ''
+  const reader = res.body?.getReader()!
+
+  async function read() {
+    const { done, value } = await reader.read()
+    if (done) {
+      console.log('Done')
+      reader.releaseLock()
+      return
+    }
+    generatedHTML.value += new TextDecoder('utf-8').decode(value)
+    read()
+
+    return
+  }
+
+  if (reader) {
+    read()
+  }
 }
 </script>
 
@@ -21,5 +36,5 @@ async function generatePage() {
   <div>
     <PromptInput v-model="userPrompt" @submit="generatePage"></PromptInput>
   </div>
-  <div v-html="generatedHTML"></div>
+  <div class="show-template" v-html="generatedHTML"></div>
 </template>
