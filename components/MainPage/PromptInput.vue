@@ -4,6 +4,8 @@ const emit = defineEmits<{
   submit: [value: string]
 }>()
 
+const textareaDefaultPrompt = 'A SaaS admin dashboard'
+
 function autoComplete(event: KeyboardEvent) {
   if (event.key === 'Tab') {
     event.preventDefault()
@@ -24,7 +26,7 @@ function autoComplete(event: KeyboardEvent) {
         <textarea
           @keydown="autoComplete"
           class="prompt-input-area"
-          placeholder="Something as placeholder"
+          :placeholder="textareaDefaultPrompt"
           v-model="modelValue"
           maxlength="1000"
           minlength="2"
