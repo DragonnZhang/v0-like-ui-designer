@@ -4,7 +4,7 @@ const emit = defineEmits<{
   submit: [value: string]
 }>()
 
-const textareaDefaultPrompt = 'A SaaS admin dashboard'
+const textareaDefaultPrompt = 'A landing page for my design portfolio'
 
 function autoComplete(event: KeyboardEvent) {
   event.preventDefault()
