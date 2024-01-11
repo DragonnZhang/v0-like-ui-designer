@@ -7,14 +7,30 @@ const emit = defineEmits<{
 const textareaDefaultPrompt = 'A SaaS admin dashboard'
 
 function autoComplete(event: KeyboardEvent) {
+  event.preventDefault()
+
+  const textarea = event.currentTarget as HTMLTextAreaElement
+
+  if (textarea.value === '') {
+    modelValue.value = textarea.placeholder
+  }
+}
+
+function submit(event: KeyboardEvent) {
+  event.preventDefault()
+
+  const textarea = event.currentTarget as HTMLTextAreaElement
+
+  if (textarea.value !== '') {
+    emit('submit', modelValue.value)
+  }
+}
+
+function keydownHandler(event: KeyboardEvent) {
   if (event.key === 'Tab') {
-    event.preventDefault()
-
-    const textarea = event.currentTarget as HTMLTextAreaElement
-
-    if (textarea.value === '') {
-      modelValue.value = textarea.placeholder
-    }
+    autoComplete(event)
+  } else if (event.key === 'Enter') {
+    submit(event)
   }
 }
 </script>
@@ -24,7 +40,7 @@ function autoComplete(event: KeyboardEvent) {
     <div class="prompt-input-wrapper">
       <div class="prompt-input-content">
         <textarea
-          @keydown="autoComplete"
+          @keydown="keydownHandler"
           class="prompt-input-area"
           :placeholder="textareaDefaultPrompt"
           v-model="modelValue"
