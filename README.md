@@ -1,75 +1,14 @@
-# Nuxt 3 Minimal Starter
+# Basic Idea
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+- 指令 - dom 树（仅 HTML 结构）- 添加样式，使用原子化 css 来减少 token
+- 问题：
 
-## Setup
+1. 如果给出带样式的例子，提示词会过长；并且 llm 无法生成 token 限制内的符合要求的页面（可以考虑只生成简单的例子）
+2. token 限制即使设置为 1000 也不够用，问题在于需要消耗过多的 token。2000 个 token 勉强够用，但是还是很花钱
+3. 只有一个例子的时候，生成什么都会长得像这个例子
+4. 如果 html 是一点点生成的，则 tailwind 不会工作
 
-Make sure to install the dependencies:
+- 功能性需求：
 
-```bash
-# npm
-npm install
-
-# pnpm
-pnpm install
-
-# yarn
-yarn install
-
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+1. 添加历史记录，点击恢复生成的页面。这样可以部分解决 tailwind 不工作的问题
+2. loading 加载提示
