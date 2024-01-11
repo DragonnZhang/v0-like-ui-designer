@@ -7,8 +7,10 @@ export default defineNuxtConfig({
     qwenApiKey: '',
     baiduApiKey: '',
     baiduSecretKey: '',
-    streaming: false,
-    model: 'openai'
+    model: 'openai',
+    public: {
+      streaming: true
+    }
   },
   css: ['~/assets/css/main.css'],
   postcss: {

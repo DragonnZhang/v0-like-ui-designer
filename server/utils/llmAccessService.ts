@@ -11,15 +11,15 @@ class Model {
       return new ChatOpenAI({
         temperature: 0,
         openAIApiKey: config.openaiApiKey,
-        maxTokens: 500,
-        streaming: config.streaming
+        maxTokens: 2000,
+        streaming: config.public.streaming
       })
     } else if (model === 'qwen') {
       return new ChatAlibabaTongyi({
         modelName: 'qwen-max',
         temperature: 0,
         alibabaApiKey: config.qwenApiKey,
-        streaming: config.streaming
+        streaming: config.public.streaming
       })
     } else {
       return new ChatBaiduWenxin({

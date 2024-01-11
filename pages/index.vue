@@ -46,11 +46,15 @@ async function getDirectResult() {
     }
   })
 
+  console.log({
+    'direct result': res.data.value
+  })
+
   generatedHTML.value = (res.data.value as string) || ''
 }
 
 async function generatePage() {
-  if (config.streaming) {
+  if (config.public.streaming) {
     getStreamResult()
   } else {
     getDirectResult()
@@ -62,5 +66,23 @@ async function generatePage() {
   <div>
     <PromptInput v-model="userPrompt" @submit="generatePage"></PromptInput>
   </div>
-  <div class="show-template" v-html="generatedHTML"></div>
+  <div class="show-template">
+    <div class="inner">
+      <div v-html="generatedHTML"></div>
+    </div>
+  </div>
 </template>
+
+<style scoped lang="scss">
+.show-template {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .inner {
+    width: 70%;
+    height: 700px;
+  }
+}
+</style>

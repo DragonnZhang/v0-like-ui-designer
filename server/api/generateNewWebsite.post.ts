@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
     const res = await generatePage(userPrompt)
     console.log('response', res)
 
-    return config.streaming
+    return config.public.streaming
       ? sendStream(event, res as ReadableStream<string>)
       : res
   } catch (err) {
