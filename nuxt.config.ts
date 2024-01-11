@@ -6,7 +6,8 @@ export default defineNuxtConfig({
     qwenApiKey: '',
     baiduApiKey: '',
     baiduSecretKey: '',
-    streaming: true
+    streaming: true,
+    model: 'qwen'
   },
   css: ['~/assets/css/main.scss'],
   postcss: {

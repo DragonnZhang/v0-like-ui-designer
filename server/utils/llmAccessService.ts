@@ -1,29 +1,47 @@
 import { ChatOpenAI } from '@langchain/openai'
 import { ChatAlibabaTongyi } from '@langchain/community/chat_models/alibaba_tongyi'
 import { ChatBaiduWenxin } from '@langchain/community/chat_models/baiduwenxin'
+import { modelType } from '~/utils/type'
 
 const config = useRuntimeConfig()
 
-const openAIModel = new ChatOpenAI({
-  temperature: 0,
-  openAIApiKey: config.openaiApiKey,
-  maxTokens: 500,
-  streaming: config.streaming
-})
+class Model {
+  constructor(model: modelType) {
+    if (model === 'openai') {
+      return new ChatOpenAI({
+        temperature: 0,
+        openAIApiKey: config.openaiApiKey,
+        maxTokens: 500,
+        streaming: config.streaming
+      })
+    } else if (model === 'qwen') {
+      return new ChatAlibabaTongyi({
+        modelName: 'qwen-max',
+        temperature: 0,
+        alibabaApiKey: config.qwenApiKey,
+        streaming: config.streaming
+      })
+    } else {
+      return new ChatBaiduWenxin({
+        modelName: 'ERNIE-Bot-turbo',
+        baiduApiKey: config.baiduApiKey,
+        baiduSecretKey: config.baiduSecretKey
+      })
+    }
+  }
+}
 
-const qwen = new ChatAlibabaTongyi({
-  modelName: 'qwen-max',
-  temperature: 0,
-  alibabaApiKey: config.qwenApiKey,
-  streaming: config.streaming
-})
+const getModel = (function () {
+  let model: any
 
-const wenxin = new ChatBaiduWenxin({
-  modelName: 'ERNIE-Bot-turbo',
-  baiduApiKey: config.baiduApiKey,
-  baiduSecretKey: config.baiduSecretKey
-})
+  return (modelName: modelType) => {
+    if (!model) {
+      model = new Model(modelName)
+    }
+    return model
+  }
+})()
 
 export function getModelInstance() {
-  return qwen
+  return getModel(config.model as modelType)
 }
