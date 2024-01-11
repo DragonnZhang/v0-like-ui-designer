@@ -34,6 +34,7 @@ async function getStreamResult() {
   }
 
   if (reader) {
+    generatedHTML.value = ''
     read()
   }
 }
