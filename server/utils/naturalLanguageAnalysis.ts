@@ -38,7 +38,7 @@ export const generatePage = async (userPrompt: string) => {
               </p></div></div></div></div></section><section id="contact" class="w-full py-12 md:py-24 lg:py-32 bg-gray-100 dark:bg-gray-800"><div class="container px-4 md:px-6"><h2 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold tracking-tighter text-center mb-12">
           Contact Me
         </h2><form class="max-w-md mx-auto space-y-4"><input class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="name" placeholder="Your Name" required=""><input type="email" class="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="email" placeholder="Your Email" required=""><textarea class="flex min-h-[80px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50" id="message" placeholder="Your Message" required=""></textarea><button class="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full" type="submit">Send Message</button></form></div></section></main><footer class="flex items-center justify-center h-16 px-4 lg:px-6 border-t"><p class="text-xs text-gray-500 dark:text-gray-400">
-      © <!-- --> Your Name. All rights reserved.
+      © Your Name. All rights reserved.
     </p></footer></div>
     ##
 
@@ -50,7 +50,7 @@ export const generatePage = async (userPrompt: string) => {
 
   const chain = promptTemplate.pipe(model)
   const parser = new StringOutputParser()
-  const llmResult = config.streaming
+  const llmResult = config.public.streaming
     ? await chain.pipe(parser).stream({
         userPrompt
       })
