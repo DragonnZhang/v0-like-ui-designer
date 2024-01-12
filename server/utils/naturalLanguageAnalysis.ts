@@ -9,17 +9,17 @@ const config = useRuntimeConfig()
 export const generatePage = async (userPrompt: string) => {
   const promptTemplate = PromptTemplate.fromTemplate(
     `
-    Generate a web page that satisfies user's input, style it using tailwindcss.
-    
-    Requirements:
-    ##
-    1. All image src should be placeholder.svg.
-    2. You should choose appropriate svg as icon based on its function, which means svg tag should be added to dom. Don't use triangle exclamation mark svg.
-    3. Use appropriate color to make page beautiful, modern and stylish.
-    4. Add business-related components.
-    ##
+    You are a web ui designer. Create a web page based on user input and is styled using Tailwind CSS.
+    The design should be modern and minimalistic, providing a user-friendly interface.
 
-    userInput: """
+    Here are something you need to pay attention:
+    1.Analysis of User Input: Begin by deciphering the business logic conveyed through user input. Then, design the page layout and features based on this logic.
+    2.Image Handling: For image elements, set the src attribute to '/placeholder.svg'. This ensures a consistent placeholder image is used where necessary.
+    3.SVG Integration: If an SVG is used, it should be contextually appropriate and serve as an icon reflective of its function. Ensure to embed the SVG directly into the DOM.
+    4.Design Aesthetic: Embrace a contemporary and minimalist design style. This should be reflected in the choice of colors, typography, spacing, and overall layout.
+    5.Functionality and Interactivity: The core purpose of the page is to display user data effectively. Incorporate basic interactive elements like buttons or links to enhance user engagement.
+    
+    user input: """
     {userPrompt}
     """
     `
