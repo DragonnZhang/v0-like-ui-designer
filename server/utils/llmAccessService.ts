@@ -3,7 +3,7 @@ import { ChatAlibabaTongyi } from '@langchain/community/chat_models/alibaba_tong
 import { ChatBaiduWenxin } from '@langchain/community/chat_models/baiduwenxin'
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai'
 import { type BaseChatModel } from '@langchain/core/language_models/chat_models'
-import { type modelType } from '~/utils/type'
+import { type modelType } from './type'
 
 const config = useRuntimeConfig()
 

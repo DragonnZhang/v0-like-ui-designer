@@ -1,5 +1,3 @@
-import type { modelType } from './utils/type'
-
 declare module 'nuxt/schema' {
   interface RuntimeConfig {
     openaiApiKey: string
@@ -7,7 +5,7 @@ declare module 'nuxt/schema' {
     baiduApiKey: string
     baiduSecretKey: string
     streaming: boolean
-    model: modelType
+    model: string
   }
 }
 // It is always important to ensure you import/export something when augmenting a type
