@@ -1,4 +1,4 @@
-import { generatePage } from '../utils/naturalLanguageAnalysis'
+import { generateHTMLFromNaturalLanguage } from '../utils/naturalLanguageAnalysis'
 
 const config = useRuntimeConfig()
 
@@ -7,14 +7,14 @@ export default defineEventHandler(async (event) => {
 
   console.log(`Processing prompt: ${userPrompt}`)
   try {
-    const res = await generatePage(userPrompt)
-    console.log('response', res)
+    const htmlResponse = await generateHTMLFromNaturalLanguage(userPrompt)
+    console.log('Response html', htmlResponse)
 
     return config.public.streaming
-      ? sendStream(event, res as ReadableStream<string>)
-      : res
+      ? sendStream(event, htmlResponse as ReadableStream<string>)
+      : htmlResponse
   } catch (err) {
-    console.log(err)
+    console.error(err)
     return null
   }
 })

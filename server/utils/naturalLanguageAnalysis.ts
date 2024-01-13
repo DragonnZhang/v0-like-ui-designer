@@ -6,7 +6,7 @@ const model = getModelInstance()
 
 const config = useRuntimeConfig()
 
-export const generatePage = async (userPrompt: string) => {
+export const generateHTMLFromNaturalLanguage = async (userPrompt: string) => {
   const promptTemplate = PromptTemplate.fromTemplate(
     `
     You are a web ui designer. Create a web page based on user input and is styled using Tailwind CSS.
@@ -18,7 +18,6 @@ export const generatePage = async (userPrompt: string) => {
     3.SVG Integration: If an SVG is used, it should be contextually appropriate and serve as an icon reflective of its function. Ensure to embed the SVG directly into the DOM.
     4.Design Aesthetic: Embrace a contemporary and minimalist design style. This should be reflected in the choice of colors, typography, spacing, and overall layout.
     5.Functionality and Interactivity: The core purpose of the page is to display user data effectively. Incorporate basic interactive elements like buttons or links to enhance user engagement.
-    
     
     Note:Please generate the HTML code directly without using Markdown code block format(do not start with \`\`\`html or end with \`\`\`).
     
