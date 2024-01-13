@@ -1,10 +1,11 @@
 <script setup lang="ts">
+const props = defineProps<{
+  textareaDefaultPrompt: string
+}>()
 const modelValue = defineModel<string>({ required: true })
 const emit = defineEmits<{
   submit: [value: string]
 }>()
-
-const textareaDefaultPrompt = 'A landing page for my design portfolio'
 
 function autoComplete(event: KeyboardEvent) {
   event.preventDefault()

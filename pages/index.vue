@@ -65,7 +65,11 @@ async function generatePage() {
 
 <template>
   <div>
-    <PromptInput v-model="userPrompt" @submit="generatePage"></PromptInput>
+    <PromptInput
+      textarea-default-prompt="A landing page for my design portfolio"
+      v-model="userPrompt"
+      @submit="generatePage"
+    ></PromptInput>
   </div>
   <div class="show-template">
     <div class="inner">
@@ -83,7 +87,7 @@ async function generatePage() {
 
   .inner {
     width: 70%;
-    height: 700px;
+    height: 100px;
   }
 }
 </style>
