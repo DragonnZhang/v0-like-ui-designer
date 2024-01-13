@@ -2,9 +2,9 @@ import { PromptTemplate } from '@langchain/core/prompts'
 import { getModelInstance } from './llmAccessService'
 import { StringOutputParser } from '@langchain/core/output_parsers'
 
-const model = getModelInstance()
-
 const config = useRuntimeConfig()
+
+const model = getModelInstance()
 
 export const generateHTMLFromNaturalLanguage = async (userPrompt: string) => {
   const promptTemplate = PromptTemplate.fromTemplate(
