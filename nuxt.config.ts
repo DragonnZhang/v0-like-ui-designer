@@ -8,8 +8,12 @@ export default defineNuxtConfig({
     baiduApiKey: '',
     baiduSecretKey: '',
     googleApiKey: '',
+    // Available choices: openai、qwen、wenxin and gemini
     model: 'gemini',
+    temperature: 0,
+    maxTokens: 2048,
     public: {
+      // Generate html page in streaming or direct mode
       streaming: true
     }
   },

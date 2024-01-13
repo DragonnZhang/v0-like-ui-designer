@@ -10,15 +10,16 @@ class Model {
   constructor(model: modelType) {
     if (model === 'openai') {
       return new ChatOpenAI({
-        temperature: 0,
+        modelName: 'gpt-3.5-turbo',
+        temperature: config.temperature,
         openAIApiKey: config.openaiApiKey,
-        maxTokens: 2000,
+        maxTokens: config.maxTokens,
         streaming: config.public.streaming
       })
     } else if (model === 'qwen') {
       return new ChatAlibabaTongyi({
         modelName: 'qwen-plus',
-        temperature: 0,
+        temperature: config.temperature,
         alibabaApiKey: config.qwenApiKey,
         streaming: config.public.streaming
       })
@@ -31,9 +32,9 @@ class Model {
     } else if (model === 'gemini') {
       return new ChatGoogleGenerativeAI({
         modelName: 'gemini-pro',
-        temperature: 0,
+        temperature: config.temperature,
         apiKey: config.googleApiKey,
-        maxOutputTokens: 2048
+        maxOutputTokens: config.maxTokens
       })
     } else {
       throw new Error(`Model ${model} is not supported.`)
@@ -41,6 +42,7 @@ class Model {
   }
 }
 
+// Model factory
 const getModel = (function () {
   let model: any
 
