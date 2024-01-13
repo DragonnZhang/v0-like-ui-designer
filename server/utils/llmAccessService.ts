@@ -1,6 +1,7 @@
 import { ChatOpenAI } from '@langchain/openai'
 import { ChatAlibabaTongyi } from '@langchain/community/chat_models/alibaba_tongyi'
 import { ChatBaiduWenxin } from '@langchain/community/chat_models/baiduwenxin'
+import { ChatGoogleGenerativeAI } from '@langchain/google-genai'
 import { modelType } from '~/utils/type'
 
 const config = useRuntimeConfig()
@@ -11,7 +12,7 @@ class Model {
       return new ChatOpenAI({
         temperature: 0,
         openAIApiKey: config.openaiApiKey,
-        maxTokens: 1000,
+        maxTokens: 2000,
         streaming: config.public.streaming
       })
     } else if (model === 'qwen') {
@@ -21,12 +22,21 @@ class Model {
         alibabaApiKey: config.qwenApiKey,
         streaming: config.public.streaming
       })
-    } else {
+    } else if (model === 'wenxin') {
       return new ChatBaiduWenxin({
         modelName: 'ERNIE-Bot-turbo',
         baiduApiKey: config.baiduApiKey,
         baiduSecretKey: config.baiduSecretKey
       })
+    } else if (model === 'gemini') {
+      return new ChatGoogleGenerativeAI({
+        modelName: 'gemini-pro',
+        temperature: 0,
+        apiKey: config.googleApiKey,
+        maxOutputTokens: 2048
+      })
+    } else {
+      throw new Error(`Model ${model} is not supported.`)
     }
   }
 }

@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@langchain/community": "^0.0.16",
+    "@langchain/google-genai": "^0.0.7",
     "@langchain/openai": "^0.0.10",
     "@nuxtjs/tailwindcss": "^6.10.4",
     "class-variance-authority": "^0.7.0",

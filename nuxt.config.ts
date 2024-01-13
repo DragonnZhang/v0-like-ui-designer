@@ -7,7 +7,8 @@ export default defineNuxtConfig({
     qwenApiKey: '',
     baiduApiKey: '',
     baiduSecretKey: '',
-    model: 'openai',
+    googleApiKey: '',
+    model: 'gemini',
     public: {
       streaming: true
     }
