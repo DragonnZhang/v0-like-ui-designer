@@ -1,7 +1,5 @@
 import { generateHTMLFromNaturalLanguage } from '../utils/naturalLanguageAnalysis'
 
-const config = useRuntimeConfig()
-
 export default defineEventHandler(async (event) => {
   const { userPrompt } = await readBody(event)
 
@@ -10,9 +8,9 @@ export default defineEventHandler(async (event) => {
     const htmlResponse = await generateHTMLFromNaturalLanguage(userPrompt)
     console.log('Response html', htmlResponse)
 
-    return config.public.streaming
-      ? sendStream(event, htmlResponse as ReadableStream<string>)
-      : htmlResponse
+    return typeof htmlResponse === 'string'
+      ? htmlResponse
+      : sendStream(event, htmlResponse)
   } catch (err) {
     console.error(err)
     return null
