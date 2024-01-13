@@ -2,53 +2,55 @@ import { ChatOpenAI } from '@langchain/openai'
 import { ChatAlibabaTongyi } from '@langchain/community/chat_models/alibaba_tongyi'
 import { ChatBaiduWenxin } from '@langchain/community/chat_models/baiduwenxin'
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai'
-import { modelType } from '~/utils/type'
+import { type BaseChatModel } from '@langchain/core/language_models/chat_models'
+import { type modelType } from '~/utils/type'
 
 const config = useRuntimeConfig()
 
-class Model {
-  constructor(model: modelType) {
-    if (model === 'openai') {
-      return new ChatOpenAI({
-        modelName: 'gpt-3.5-turbo',
-        temperature: config.temperature,
-        openAIApiKey: config.openaiApiKey,
-        maxTokens: config.maxTokens,
-        streaming: config.public.streaming
-      })
-    } else if (model === 'qwen') {
-      return new ChatAlibabaTongyi({
-        modelName: 'qwen-plus',
-        temperature: config.temperature,
-        alibabaApiKey: config.qwenApiKey,
-        streaming: config.public.streaming
-      })
-    } else if (model === 'wenxin') {
-      return new ChatBaiduWenxin({
-        modelName: 'ERNIE-Bot-turbo',
-        baiduApiKey: config.baiduApiKey,
-        baiduSecretKey: config.baiduSecretKey
-      })
-    } else if (model === 'gemini') {
-      return new ChatGoogleGenerativeAI({
-        modelName: 'gemini-pro',
-        temperature: config.temperature,
-        apiKey: config.googleApiKey,
-        maxOutputTokens: config.maxTokens
-      })
-    } else {
-      throw new Error(`Model ${model} is not supported.`)
-    }
-  }
+const getModelStrategy: {
+  [key in modelType]: () => BaseChatModel
+} = {
+  openai: () =>
+    new ChatOpenAI({
+      modelName: 'gpt-3.5-turbo',
+      temperature: config.temperature,
+      openAIApiKey: config.openaiApiKey,
+      maxTokens: config.maxTokens,
+      streaming: config.public.streaming
+    }),
+  qwen: () =>
+    new ChatAlibabaTongyi({
+      modelName: 'qwen-plus',
+      temperature: config.temperature,
+      alibabaApiKey: config.qwenApiKey,
+      streaming: config.public.streaming
+    }),
+  wenxin: () =>
+    new ChatBaiduWenxin({
+      modelName: 'ERNIE-Bot-turbo',
+      baiduApiKey: config.baiduApiKey,
+      baiduSecretKey: config.baiduSecretKey
+    }),
+  gemini: () =>
+    new ChatGoogleGenerativeAI({
+      modelName: 'gemini-pro',
+      temperature: config.temperature,
+      apiKey: config.googleApiKey,
+      maxOutputTokens: config.maxTokens
+    })
 }
 
 // Model factory
 const getModel = (function () {
-  let model: any
+  let model: BaseChatModel
 
   return (modelName: modelType) => {
     if (!model) {
-      model = new Model(modelName)
+      if (modelName in getModelStrategy) {
+        model = getModelStrategy[modelName]()
+      } else {
+        throw new Error(`Model ${model} is not supported.`)
+      }
     }
     return model
   }
