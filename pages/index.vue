@@ -5,7 +5,7 @@ const config = useRuntimeConfig()
 
 const userPrompt = ref('')
 
-const generatedHTML = ref('')
+const runtimeState = useRuntimeState()
 
 async function getStreamResult() {
   const res = await fetch('/api/generateNewWebsite', {
@@ -23,18 +23,21 @@ async function getStreamResult() {
   async function read() {
     const { done, value } = await reader.read()
     if (done) {
+      runtimeState.value.isGeneratingPage = false
       console.log('Done')
       reader.releaseLock()
       return
     }
-    generatedHTML.value += new TextDecoder('utf-8').decode(value)
+    runtimeState.value.generatedPageHtml += new TextDecoder('utf-8').decode(
+      value
+    )
     read()
 
     return
   }
 
   if (reader) {
-    generatedHTML.value = ''
+    runtimeState.value.generatedPageHtml = ''
     read()
   }
 }
@@ -47,14 +50,17 @@ async function getDirectResult() {
     }
   })
 
+  runtimeState.value.isGeneratingPage = false
+
   console.log({
     'direct result': res.data.value
   })
 
-  generatedHTML.value = (res.data.value as string) || ''
+  runtimeState.value.generatedPageHtml = (res.data.value as string) || ''
 }
 
 async function generatePage() {
+  runtimeState.value.isGeneratingPage = true
   if (config.public.streaming) {
     getStreamResult()
   } else {
@@ -73,7 +79,7 @@ async function generatePage() {
   </div>
   <div class="show-template">
     <div class="inner">
-      <div v-html="generatedHTML"></div>
+      <div v-html="runtimeState.generatedPageHtml"></div>
     </div>
   </div>
 </template>
