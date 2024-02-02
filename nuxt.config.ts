@@ -10,7 +10,7 @@ export default defineNuxtConfig({
     googleApiKey: '',
     // Available choices: openai、qwen、wenxin and gemini
     model: 'gemini',
-    temperature: 0,
+    temperature: 1,
     maxTokens: 2048,
     public: {
       // Generate html page in streaming or direct mode
