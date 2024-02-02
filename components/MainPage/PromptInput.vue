@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   textareaDefaultPrompt: string
+  loading: boolean
 }>()
 const modelValue = defineModel<string>({ required: true })
 const emit = defineEmits<{
@@ -38,7 +39,7 @@ function keydownHandler(event: KeyboardEvent) {
 
 <template>
   <div class="prompt-input-container">
-    <div class="prompt-input-wrapper">
+    <div class="prompt-input-wrapper" :class="{ loading }">
       <div class="prompt-input-content">
         <textarea
           @keydown="keydownHandler"
@@ -69,6 +70,10 @@ function keydownHandler(event: KeyboardEvent) {
   padding: 26vh 0;
 
   .prompt-input-wrapper {
+    &.loading {
+      animation: glow 2s infinite;
+    }
+
     background-color: var(--prompt-input-background);
     border-radius: 24px;
     width: 100%;
@@ -103,6 +108,21 @@ function keydownHandler(event: KeyboardEvent) {
         cursor: pointer;
         height: 38px;
       }
+    }
+  }
+
+  @keyframes glow {
+    0% {
+      box-shadow: 0 0 1px #fff, 0 0 2px #fff, 0 0 3px #00f, 0 0 4px #0ff,
+        0 0 5px #00c9ff, 0 0 6px #00c9ff, 0 0 7px #00c9ff;
+    }
+    50% {
+      box-shadow: 0 0 2px #fff, 0 0 3px #92fe9d, 0 0 4px #92fe9d,
+        0 0 5px #92fe9d, 0 0 6px #92fe9d, 0 0 7px #92fe9d, 0 0 8px #92fe9d;
+    }
+    100% {
+      box-shadow: 0 0 1px #fff, 0 0 2px #fff, 0 0 3px #00f, 0 0 4px #0ff,
+        0 0 5px #00c9ff, 0 0 6px #00c9ff, 0 0 7px #00c9ff;
     }
   }
 }

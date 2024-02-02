@@ -23,22 +23,18 @@ async function getStreamResult() {
   async function read() {
     const { done, value } = await reader.read()
     if (done) {
-      runtimeState.value.isGeneratingPage = false
-      console.log('Done')
       reader.releaseLock()
       return
     }
     runtimeState.value.generatedPageHtml += new TextDecoder('utf-8').decode(
       value
     )
-    read()
-
-    return
+    await read()
   }
 
   if (reader) {
     runtimeState.value.generatedPageHtml = ''
-    read()
+    await read()
   }
 }
 
@@ -50,8 +46,6 @@ async function getDirectResult() {
     }
   })
 
-  runtimeState.value.isGeneratingPage = false
-
   console.log({
     'direct result': res.data.value
   })
@@ -61,10 +55,16 @@ async function getDirectResult() {
 
 async function generatePage() {
   runtimeState.value.isGeneratingPage = true
-  if (config.public.streaming) {
-    getStreamResult()
-  } else {
-    getDirectResult()
+  try {
+    if (config.public.streaming) {
+      await getStreamResult()
+    } else {
+      await getDirectResult()
+    }
+  } catch (err) {
+    console.log(err)
+  } finally {
+    runtimeState.value.isGeneratingPage = false
   }
 }
 </script>
@@ -73,6 +73,7 @@ async function generatePage() {
   <div>
     <PromptInput
       textarea-default-prompt="A landing page for my design portfolio"
+      :loading="runtimeState.isGeneratingPage"
       v-model="userPrompt"
       @submit="generatePage"
     ></PromptInput>
