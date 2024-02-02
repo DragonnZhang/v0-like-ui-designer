@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import PromptInput from '~/components/MainPage/PromptInput.vue'
+import GeneratedPage from '~/components/MainPage/GeneratedPage.vue'
 
 const config = useRuntimeConfig()
 
@@ -70,31 +71,11 @@ async function generatePage() {
 </script>
 
 <template>
-  <div>
-    <PromptInput
-      textarea-default-prompt="A landing page for my design portfolio"
-      :loading="runtimeState.isGeneratingPage"
-      v-model="userPrompt"
-      @submit="generatePage"
-    ></PromptInput>
-  </div>
-  <div class="show-template">
-    <div class="inner">
-      <div v-html="runtimeState.generatedPageHtml"></div>
-    </div>
-  </div>
+  <PromptInput
+    textarea-default-prompt="A landing page for my design portfolio"
+    :loading="runtimeState.isGeneratingPage"
+    v-model="userPrompt"
+    @submit="generatePage"
+  ></PromptInput>
+  <GeneratedPage />
 </template>
-
-<style scoped lang="scss">
-.show-template {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-  .inner {
-    width: 70%;
-    height: 100px;
-  }
-}
-</style>
