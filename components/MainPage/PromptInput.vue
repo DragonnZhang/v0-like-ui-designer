@@ -8,6 +8,8 @@ const emit = defineEmits<{
   submit: [value: string]
 }>()
 
+let isComposing = false
+
 function autoComplete(event: KeyboardEvent) {
   event.preventDefault()
 
@@ -31,7 +33,7 @@ function submit(event: KeyboardEvent) {
 function keydownHandler(event: KeyboardEvent) {
   if (event.key === 'Tab') {
     autoComplete(event)
-  } else if (event.key === 'Enter') {
+  } else if (event.key === 'Enter' && !isComposing) {
     submit(event)
   }
 }
@@ -42,6 +44,8 @@ function keydownHandler(event: KeyboardEvent) {
     <div class="prompt-input-wrapper" :class="{ loading }">
       <div class="prompt-input-content">
         <textarea
+          @compositionstart="isComposing = true"
+          @compositionend="isComposing = false"
           @keydown="keydownHandler"
           class="prompt-input-area"
           :placeholder="textareaDefaultPrompt"
