@@ -27,13 +27,15 @@ export const generateHTMLFromNaturalLanguage = async (userPrompt: string) => {
     ['human', humanTemplate]
   ])
 
-  const chain = chatPrompt.pipe(model)
   const parser = new StringOutputParser()
+
+  const chain = chatPrompt.pipe(model).pipe(parser)
+
   const llmResult = config.public.streaming
-    ? await chain.pipe(parser).stream({
+    ? await chain.stream({
         userPrompt
       })
-    : await chain.pipe(parser).invoke({
+    : await chain.invoke({
         userPrompt
       })
 
