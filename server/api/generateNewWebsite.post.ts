@@ -1,7 +1,10 @@
 import { generateHTMLFromNaturalLanguage } from '../utils/naturalLanguageAnalysis'
+import { StreamingTextResponse } from 'ai'
 
 export default defineEventHandler(async (event) => {
-  const { userPrompt } = await readBody(event)
+  const { messages } = await readBody(event)
+
+  const userPrompt = messages[messages.length - 1].content
 
   console.log(`Processing prompt: ${userPrompt}`)
   try {
@@ -10,7 +13,7 @@ export default defineEventHandler(async (event) => {
 
     return typeof htmlResponse === 'string'
       ? htmlResponse
-      : sendStream(event, htmlResponse)
+      : new StreamingTextResponse(htmlResponse)
   } catch (err) {
     console.error(err)
     return null

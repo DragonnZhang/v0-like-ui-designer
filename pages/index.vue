@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import PromptInput from '~/components/MainPage/PromptInput.vue'
 import GeneratedPage from '~/components/MainPage/GeneratedPage.vue'
+import { useChat } from 'ai/vue'
 
 const config = useRuntimeConfig()
 
@@ -8,36 +9,18 @@ const userPrompt = ref('')
 
 const runtimeState = useRuntimeState()
 
-async function getStreamResult() {
-  const res = await fetch('/api/generateNewWebsite', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({
-      userPrompt: userPrompt.value
-    })
-  })
-
-  const reader = res.body?.getReader()!
-
-  async function read() {
-    const { done, value } = await reader.read()
-    if (done) {
-      reader.releaseLock()
-      return
-    }
-    runtimeState.value.generatedPageHtml += new TextDecoder('utf-8').decode(
-      value
-    )
-    await read()
+const { messages, input, handleSubmit } = useChat({
+  api: '/api/generateNewWebsite',
+  headers: { 'Content-Type': 'application/json' },
+  onFinish() {
+    runtimeState.value.isGeneratingPage = false
   }
+})
 
-  if (reader) {
-    runtimeState.value.generatedPageHtml = ''
-    await read()
-  }
-}
+watch(messages, () => {
+  runtimeState.value.generatedPageHtml =
+    messages.value[messages.value.length - 1].content
+})
 
 async function getDirectResult() {
   const res = await useFetch('/api/generateNewWebsite', {
@@ -56,16 +39,11 @@ async function getDirectResult() {
 
 async function generatePage() {
   runtimeState.value.isGeneratingPage = true
-  try {
-    if (config.public.streaming) {
-      await getStreamResult()
-    } else {
-      await getDirectResult()
-    }
-  } catch (err) {
-    console.log(err)
-  } finally {
-    runtimeState.value.isGeneratingPage = false
+  if (config.public.streaming) {
+    input.value = userPrompt.value
+    handleSubmit(new Event('submit'))
+  } else {
+    await getDirectResult()
   }
 }
 </script>
