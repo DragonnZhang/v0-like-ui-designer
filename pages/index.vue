@@ -40,6 +40,7 @@ async function generatePage() {
     handleSubmit(new Event('submit'))
   } else {
     await getDirectResult()
+    runtimeState.value.isGeneratingPage = false
   }
 }
 </script>
