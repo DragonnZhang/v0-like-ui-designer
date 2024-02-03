@@ -8,13 +8,11 @@ export default defineNuxtConfig({
     baiduApiKey: '',
     baiduSecretKey: '',
     googleApiKey: '',
-    // Available choices: openai、qwen、wenxin and gemini
-    model: 'gemini',
+    model: 'gemini', // Available choices: openai、qwen、wenxin and gemini
     temperature: 1,
     maxTokens: 2048,
     public: {
-      // Generate html page in streaming or direct mode
-      streaming: true
+      streaming: true // Generate html page in streaming or direct mode
     }
   },
   css: ['~/assets/css/main.css'],
