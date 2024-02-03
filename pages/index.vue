@@ -30,10 +30,6 @@ async function getDirectResult() {
     }
   })
 
-  console.log({
-    'direct result': res.data.value
-  })
-
   runtimeState.value.generatedPageHtml = (res.data.value as string) || ''
 }
 
