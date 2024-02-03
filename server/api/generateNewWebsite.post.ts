@@ -1,6 +1,8 @@
 import { generateHTMLFromNaturalLanguage } from '../utils/naturalLanguageAnalysis'
 import { StreamingTextResponse } from 'ai'
 
+export const runtime = 'edge'
+
 export default defineEventHandler(async (event) => {
   const { messages } = await readBody(event)
 
