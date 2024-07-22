@@ -2,6 +2,7 @@
 export default defineNuxtConfig({
   modules: ['@nuxtjs/tailwindcss', 'shadcn-nuxt'],
   devtools: { enabled: true },
+
   runtimeConfig: {
     openaiApiKey: '',
     qwenApiKey: '',
@@ -12,14 +13,18 @@ export default defineNuxtConfig({
     temperature: 1,
     maxTokens: 2048,
     public: {
-      streaming: true // Generate html page in streaming or direct mode
+      streaming: false // Generate html page in streaming or direct mode
     }
   },
+
   css: ['~/assets/css/main.css'],
+
   postcss: {
     plugins: {
       tailwindcss: {},
       autoprefixer: {}
     }
-  }
+  },
+
+  compatibilityDate: '2024-07-22'
 })

@@ -56,9 +56,7 @@ function keydownHandler(event: KeyboardEvent) {
           rows="1"
         />
         <div class="buttons">
-          <button class="button-main" @click="$emit('submit', modelValue)">
-            Confirm
-          </button>
+          <button class="button-main" @click="$emit('submit', modelValue)">Confirm</button>
         </div>
       </div>
     </div>
@@ -74,15 +72,15 @@ function keydownHandler(event: KeyboardEvent) {
   padding: 26vh 0;
 
   .prompt-input-wrapper {
-    &.loading {
-      animation: glow 2s infinite;
-    }
-
     background-color: var(--prompt-input-background);
     border-radius: 24px;
     width: 100%;
     max-width: 32rem;
     padding: 0 0.75rem 0 1rem;
+
+    &.loading {
+      animation: glow 2s infinite;
+    }
 
     .prompt-input-content {
       font-size: 12px;
@@ -117,16 +115,34 @@ function keydownHandler(event: KeyboardEvent) {
 
   @keyframes glow {
     0% {
-      box-shadow: 0 0 1px #fff, 0 0 2px #fff, 0 0 3px #00f, 0 0 4px #0ff,
-        0 0 5px #00c9ff, 0 0 6px #00c9ff, 0 0 7px #00c9ff;
+      box-shadow:
+        0 0 1px #fff,
+        0 0 2px #fff,
+        0 0 3px #00f,
+        0 0 4px #0ff,
+        0 0 5px #00c9ff,
+        0 0 6px #00c9ff,
+        0 0 7px #00c9ff;
     }
     50% {
-      box-shadow: 0 0 2px #fff, 0 0 3px #92fe9d, 0 0 4px #92fe9d,
-        0 0 5px #92fe9d, 0 0 6px #92fe9d, 0 0 7px #92fe9d, 0 0 8px #92fe9d;
+      box-shadow:
+        0 0 2px #fff,
+        0 0 3px #92fe9d,
+        0 0 4px #92fe9d,
+        0 0 5px #92fe9d,
+        0 0 6px #92fe9d,
+        0 0 7px #92fe9d,
+        0 0 8px #92fe9d;
     }
     100% {
-      box-shadow: 0 0 1px #fff, 0 0 2px #fff, 0 0 3px #00f, 0 0 4px #0ff,
-        0 0 5px #00c9ff, 0 0 6px #00c9ff, 0 0 7px #00c9ff;
+      box-shadow:
+        0 0 1px #fff,
+        0 0 2px #fff,
+        0 0 3px #00f,
+        0 0 4px #0ff,
+        0 0 5px #00c9ff,
+        0 0 6px #00c9ff,
+        0 0 7px #00c9ff;
     }
   }
 }

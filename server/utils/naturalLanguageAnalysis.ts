@@ -6,6 +6,7 @@ const config = useRuntimeConfig()
 
 const model = getModelInstance()
 
+// 根据自然语言生成界面的提示词
 export const generateHTMLFromNaturalLanguage = async (userPrompt: string) => {
   const systemTemplate = `
   You are a web ui designer. Create a web page based on user input and is styled using Tailwind CSS.
@@ -42,32 +43,37 @@ export const generateHTMLFromNaturalLanguage = async (userPrompt: string) => {
   return llmResult
 }
 
+// CHI 2025 论文的提示词
 export const generateCode = async (dom: string, task: string) => {
-  const promptTemplate = PromptTemplate.fromTemplate(
-    `
-    Generate JavaScript code to execute html relevant task.
-    You should always use querySelectorAll rather than querySelector, such as querySelector('#id1, #id2') to select elements.
-    Then you do something to elements selected, such as add style, add event listener or appendChild.
-    If code executes adding element task, code should use appendChild rather than innerHTML.
-    Only generate code, no comment.
-    Take a deep breath.
+  const systemTemplate = `
+  Generate JavaScript code to execute html relevant task.
+  You should always use querySelectorAll rather than querySelector, such as querySelector('#id1, #id2') to select elements.
+  Then you do something to elements selected, such as add style, add event listener or appendChild.
+  If code executes adding element task, code should use appendChild rather than innerHTML.
+  Only generate code, no comment.
+  Take a deep breath.
+  `
 
-    task: """
-    {task}
-    """
+  const humanTemplate = '{dom}、{task}'
 
-    html dom: """
-    {domString}
-    """
-    `
-  )
+  const chatPrompt = ChatPromptTemplate.fromMessages([
+    ['system', systemTemplate],
+    ['human', humanTemplate]
+  ])
 
-  const chain = promptTemplate.pipe(model)
+  const parser = new StringOutputParser()
 
-  const llmResult = await chain.invoke({
-    domString: dom,
-    task
-  })
+  const chain = chatPrompt.pipe(model).pipe(parser)
+
+  const llmResult = config.public.streaming
+    ? await chain.stream({
+        dom,
+        task
+      })
+    : await chain.invoke({
+        dom,
+        task
+      })
 
   return llmResult
 }
