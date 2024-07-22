@@ -13,9 +13,7 @@ export default defineEventHandler(async (event) => {
     const htmlResponse = await generateHTMLFromNaturalLanguage(userPrompt)
     console.log('Response html', htmlResponse)
 
-    return typeof htmlResponse === 'string'
-      ? htmlResponse
-      : new StreamingTextResponse(htmlResponse)
+    return typeof htmlResponse === 'string' ? htmlResponse : new StreamingTextResponse(htmlResponse)
   } catch (err) {
     console.error(err)
     return null

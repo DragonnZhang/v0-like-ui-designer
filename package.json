@@ -13,6 +13,7 @@
     "autoprefixer": "^10.4.16",
     "nuxt": "^3.9.0",
     "postcss": "^8.4.33",
+    "prettier": "^3.3.3",
     "sass": "^1.69.7",
     "shadcn-nuxt": "^0.8.6",
     "tailwindcss": "^3.4.1",
