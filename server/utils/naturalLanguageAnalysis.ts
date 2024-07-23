@@ -46,16 +46,6 @@ export const generateHTMLFromNaturalLanguage = async (userPrompt: string) => {
 
 // CHI 2025 论文的提示词
 export const generateCode = async (dom: string, task: string) => {
-  // 原来的系统提示词，即根据自然语言直接生成代码的提示词
-  // const systemTemplate = `
-  // Generate JavaScript code to execute html relevant task.
-  // You should always use querySelectorAll rather than querySelector, such as querySelector('#id1, #id2') to select elements.
-  // Then you do something to elements selected, such as add style, add event listener or appendChild.
-  // If code executes adding element task, code should use appendChild rather than innerHTML.
-  // Only generate code, do not use markdown syntax like \`\`\`javascript.
-  // Take a deep breath.
-  // `
-
   // 新的系统提示词
   const systemTemplate = `
 Based on the HTML structure and task instructions provided by the user, generate the following object structure:
@@ -91,7 +81,10 @@ If the user's task is "When the 'Forgot your password?' link is clicked, navigat
 }} 
 where idx in target is the id of the link element; parameters includes target and the redirect URL 'reset', because the user's task is to execute the redirect logic when the link is clicked, so the function needs to receive target and the redirect URL as parameters; I have omitted some of the code in the example code, in actual situations it needs to be filled in.
 
-Please return this object structure as a JSON string, without using markdown syntax like \`\`\`json.
+Pay Attention:
+1. Please return this object structure as a JSON string, without using markdown syntax like \`\`\`json.
+2. When using dom api to select elements, make sure the corresponding elements exist, or the code will throw an error.
+3. No comments allowed in the code because that will cause errors.
 `
 
   // 用户提示词
