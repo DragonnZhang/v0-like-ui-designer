@@ -37,7 +37,7 @@ onMounted(() => {
     if (e.code === exitKey) {
       clearInfo()
       activeElement.forEach((el) => {
-        el.style.border = 'none'
+        resetStyle(el)
       })
       activeElement.clear()
     }
@@ -60,31 +60,35 @@ onMounted(() => {
   document.addEventListener('mouseout', (e: MouseEvent) => {
     if (activeElement.has(e.target as HTMLElement)) return // 如果移出按钮则返回
     const target = e.target as HTMLElement
-    const style = styleMap.get(target)
-
-    if (!style) {
-      target.style.border = 'none'
-      return
-    }
-
-    // 样式重新赋值
-    target.style.borderBottomColor = style.borderBottomColor
-    target.style.borderBottomStyle = style.borderBottomStyle
-    target.style.borderBottomWidth = style.borderBottomWidth
-
-    target.style.borderRightColor = style.borderRightColor
-    target.style.borderRightStyle = style.borderRightStyle
-    target.style.borderRightWidth = style.borderRightWidth
-
-    target.style.borderTopColor = style.borderTopColor
-    target.style.borderTopStyle = style.borderTopStyle
-    target.style.borderTopWidth = style.borderTopWidth
-
-    target.style.borderLeftColor = style.borderLeftColor
-    target.style.borderLeftStyle = style.borderLeftStyle
-    target.style.borderLeftWidth = style.borderLeftWidth
+    resetStyle(target)
   })
 })
+
+function resetStyle(target: HTMLElement) {
+  const style = styleMap.get(target)
+
+  if (!style) {
+    target.style.border = 'none'
+    return
+  }
+
+  // 样式重新赋值
+  target.style.borderBottomColor = style.borderBottomColor
+  target.style.borderBottomStyle = style.borderBottomStyle
+  target.style.borderBottomWidth = style.borderBottomWidth
+
+  target.style.borderRightColor = style.borderRightColor
+  target.style.borderRightStyle = style.borderRightStyle
+  target.style.borderRightWidth = style.borderRightWidth
+
+  target.style.borderTopColor = style.borderTopColor
+  target.style.borderTopStyle = style.borderTopStyle
+  target.style.borderTopWidth = style.borderTopWidth
+
+  target.style.borderLeftColor = style.borderLeftColor
+  target.style.borderLeftStyle = style.borderLeftStyle
+  target.style.borderLeftWidth = style.borderLeftWidth
+}
 
 async function handleClick(task: string, selectedElements: HTMLElement[]) {
   isLoading.value = true
