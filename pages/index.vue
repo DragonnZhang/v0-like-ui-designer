@@ -27,6 +27,8 @@ const multipleChoiceKey = 'MetaLeft'
 const exitKey = 'Escape'
 let multipleChoiceMode = false
 
+const styleMap = new Map<HTMLElement, CSSStyleDeclaration>()
+
 onMounted(() => {
   document.addEventListener('keydown', (e: KeyboardEvent) => {
     if (e.code === multipleChoiceKey) {
@@ -49,11 +51,38 @@ onMounted(() => {
     if (activeElement.size !== 0 && !multipleChoiceMode) return
     const el = e.target as HTMLElement
     if (el.tagName === 'BODY') return
-    el.style.border = '0.5px dashed white'
+    if (el.id === 'app') return
+
+    const style = JSON.parse(JSON.stringify(el.style))
+    styleMap.set(el, style)
+    el.style.border = '1px dashed red'
   })
   document.addEventListener('mouseout', (e: MouseEvent) => {
     if (activeElement.has(e.target as HTMLElement)) return // 如果移出按钮则返回
-    ;(e.target as HTMLElement).style.border = 'none'
+    const target = e.target as HTMLElement
+    const style = styleMap.get(target)
+
+    if (!style) {
+      target.style.border = 'none'
+      return
+    }
+
+    // 样式重新赋值
+    target.style.borderBottomColor = style.borderBottomColor
+    target.style.borderBottomStyle = style.borderBottomStyle
+    target.style.borderBottomWidth = style.borderBottomWidth
+
+    target.style.borderRightColor = style.borderRightColor
+    target.style.borderRightStyle = style.borderRightStyle
+    target.style.borderRightWidth = style.borderRightWidth
+
+    target.style.borderTopColor = style.borderTopColor
+    target.style.borderTopStyle = style.borderTopStyle
+    target.style.borderTopWidth = style.borderTopWidth
+
+    target.style.borderLeftColor = style.borderLeftColor
+    target.style.borderLeftStyle = style.borderLeftStyle
+    target.style.borderLeftWidth = style.borderLeftWidth
   })
 })
 
