@@ -1,6 +1,6 @@
 let id = 0
 
-export function addId(dom: HTMLElement) {
+function addId(dom: HTMLElement) {
   function traverse(el: HTMLElement) {
     el.id = `id${id++}`
     for (const child of el.children) {
@@ -12,3 +12,12 @@ export function addId(dom: HTMLElement) {
 
   traverse(dom)
 }
+
+type JSONData = {
+  target: string
+  parameters: string[]
+  returnValue: string[]
+  code: string
+}
+
+export { addId, type JSONData }

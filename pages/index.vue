@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { inputValue, processClick, clearInfo, selectedElements } from '~/utils/elementSelection'
-import { executeTask, cleanWindow, styleObject, windowShowValue } from '~/utils/executeTask'
+import { executeTask } from '~/utils/executeTask'
 import PageTemplate from '~/components/MainPage/PageTemplate.vue'
 
 const task = ref<string>('')
@@ -35,7 +35,6 @@ onMounted(() => {
     }
     if (e.code === exitKey) {
       clearInfo()
-      cleanWindow()
       activeElement.forEach((el) => {
         el.style.border = 'none'
       })
@@ -66,7 +65,6 @@ function handleClick(task: string, selectedElements: HTMLElement[]) {
 </script>
 
 <template>
-  <!-- search and execute -->
   <div
     class="search-bar"
     v-show="inputValue.show"
@@ -75,11 +73,6 @@ function handleClick(task: string, selectedElements: HTMLElement[]) {
     <div class="upper-area">
       <input type="text" v-model="task" placeholder="Your command here." />
       <button @click="handleClick(task, selectedElements)">CONFIRM</button>
-    </div>
-    <!-- here we have style manipulation panel -->
-    <div class="style-panel" v-if="windowShowValue">
-      <input type="text" v-model="styleObject['font-size']" />
-      <input type="text" v-model="styleObject['color']" />
     </div>
   </div>
 

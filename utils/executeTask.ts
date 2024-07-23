@@ -1,6 +1,33 @@
-import { addId } from './util'
+import { addId, type JSONData } from './util'
 
-async function changeElementStyleV2(task: string, selectedElements: HTMLElement[]) {
+// dom 元素预处理
+function elementPreprocessing(selectedElements: HTMLElement[]) {
+  function removeClass(element: HTMLElement) {
+    function dfs(element: HTMLElement) {
+      element.removeAttribute('class')
+
+      for (let child of element.children) {
+        dfs(child as HTMLElement)
+      }
+    }
+
+    dfs(element)
+  }
+
+  function removeSvg(element: HTMLElement) {
+    function dfs(element: HTMLElement) {
+      if (element.tagName === 'svg') {
+        element.remove()
+      }
+
+      for (let child of element.children) {
+        dfs(child as HTMLElement)
+      }
+    }
+
+    dfs(element)
+  }
+
   selectedElements.forEach((selectedElement) => {
     addId(selectedElement)
   })
@@ -18,9 +45,14 @@ async function changeElementStyleV2(task: string, selectedElements: HTMLElement[
     domString += c.outerHTML
   })
 
-  console.log(`html: ${domString}`)
+  console.log(`html:\n${domString}`)
 
-  let code = (
+  return domString
+}
+
+// 返回值是一个 json 字符串
+async function getLLMProcessingResult(task: string, domString: string): Promise<string> {
+  let result = (
     await useFetch('/api/generateLogicCode', {
       method: 'POST',
       body: {
@@ -30,96 +62,37 @@ async function changeElementStyleV2(task: string, selectedElements: HTMLElement[
     })
   ).data.value as string
 
-  function extractHandler(c: string) {
-    if (c.includes('DOMContentLoaded')) {
-      const regex =
-        /document\.addEventListener\((?:'|")DOMContentLoaded(?:'|"),\s*function\(\)\s*\{\s*(.*)\}\);/
+  console.log(`LLM response result:\n${result}`)
 
-      c = c.split('\n').join('')
-      console.log(c)
-      return regex.exec(c)![1]
-    }
-    return c
+  return result
+}
+
+// 处理 json 字符串
+function handleJsonString(jsonString: string) {
+  // 去除 \n，否则 JSON.parse 会报错
+  const jsonObject = JSON.parse(jsonString.replaceAll('\n', '')) as {
+    data: JSONData
   }
 
-  code = extractHandler(code)
+  console.log(`JSON Object:\n${jsonObject}`)
 
-  console.log(`code: ${code}`)
-
-  eval(code)
+  return { ...jsonObject.data }
 }
 
-function removeClass(element: HTMLElement) {
-  function dfs(element: HTMLElement) {
-    element.removeAttribute('class')
-
-    for (let child of element.children) {
-      dfs(child as HTMLElement)
-    }
-  }
-
-  dfs(element)
+// 执行代码
+function executeCode(data: JSONData) {
+  console.log(`target:\n${data.target}`)
+  console.log(`parameters:\n${data.parameters}`)
+  console.log(`returnValue:\n${data.returnValue}`)
+  console.log(`code:\n${data.code}`)
 }
 
-function removeSvg(element: HTMLElement) {
-  function dfs(element: HTMLElement) {
-    if (element.tagName === 'svg') {
-      element.remove()
-    }
-
-    for (let child of element.children) {
-      dfs(child as HTMLElement)
-    }
-  }
-
-  dfs(element)
-}
-
-const styleObject = reactive({
-  'font-size': '0',
-  color: ''
-})
-
-let stopHandler = () => {}
-
-const windowShowValue = ref(false)
-
-// task3: show a window to let user change style
-function showWindow(selectedElements: HTMLElement[]) {
-  // initialize styleObject value and watchEffect
-  const el = selectedElements[0]
-
-  const style = window.getComputedStyle(el)
-
-  for (const key in styleObject) {
-    styleObject[key as keyof typeof styleObject] = style.getPropertyValue(key)
-  }
-
-  stopHandler = watchEffect(() => {
-    for (const key in styleObject) {
-      el.style[key as any] = styleObject[key as keyof typeof styleObject]
-    }
-  })
-
-  // show window
-  windowShowValue.value = true
-}
-
-function cleanWindow() {
-  stopHandler()
-  windowShowValue.value = false
-}
-
-// main function to classify tasks and call handlers to execute them
+// main function
 async function executeTask(task: string, selectedElements: HTMLElement[]) {
-  const type = 0
-
-  console.log(`任务类型:${type === 0 ? '改变样式' : '使用属性窗格改变样式'}`)
-  if (type === 0) {
-    changeElementStyleV2(task, selectedElements)
-  } else {
-    showWindow(selectedElements)
-  }
+  const domString = elementPreprocessing(selectedElements)
+  const jsonString = await getLLMProcessingResult(task, domString)
+  const data = handleJsonString(jsonString)
+  executeCode(data)
 }
 
-export { executeTask, cleanWindow, styleObject, windowShowValue }
+export { executeTask }

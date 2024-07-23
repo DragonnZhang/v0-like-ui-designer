@@ -10,10 +10,10 @@ export default defineEventHandler(async (event) => {
   console.log(`${chalk.blue('Processing dom string:')}\n${chalk.green(domString)}`)
   console.log(`${chalk.blue('Processing prompt:')} ${task}`)
   try {
-    const htmlResponse = await generateCode(domString, task)
-    console.log(`${chalk.blue('Response html:')}\n${htmlResponse}`)
+    const response = await generateCode(domString, task)
+    console.log(`${chalk.blue('Response data:')}\n${response}`)
 
-    return typeof htmlResponse === 'string' ? htmlResponse : new StreamingTextResponse(htmlResponse)
+    return typeof response === 'string' ? response : new StreamingTextResponse(response)
   } catch (err) {
     console.error(chalk.red(err))
     return ''
