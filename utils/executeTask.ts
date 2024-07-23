@@ -97,7 +97,7 @@ function executeCode(data: JSONData) {
   // 处理 parameters
   if (data.parameters) {
     data.parameters = data.parameters.map((v) => {
-      if (v === 'target') {
+      if (v === 'target' || v === 'targets') {
         return 'target'
       }
       if (typeof v === 'string') {

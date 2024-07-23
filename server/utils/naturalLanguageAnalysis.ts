@@ -84,7 +84,7 @@ where idx in target is the id of the link element; parameters includes target an
 Pay Attention:
 1. Please return this object structure as a JSON string, without using markdown syntax like \`\`\`json.
 2. When using dom api to select elements, make sure the corresponding elements exist, or the code will throw an error.
-3. No comments allowed in the code because that will cause errors.
+3. No comments allowed in the code because that will cause errors, implement all the codes, never use TODO.
 `
 
   // 用户提示词
