@@ -1,5 +1,5 @@
 <script setup lang="ts">
-const props = defineProps<{
+defineProps<{
   textareaDefaultPrompt: string
   loading: boolean
 }>()
@@ -69,13 +69,11 @@ function keydownHandler(event: KeyboardEvent) {
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 26vh 0;
 
   .prompt-input-wrapper {
     background-color: var(--prompt-input-background);
     border-radius: 24px;
     width: 100%;
-    max-width: 32rem;
     padding: 0 0.75rem 0 1rem;
 
     &.loading {
