@@ -1,6 +1,7 @@
 import { ChatPromptTemplate } from '@langchain/core/prompts'
 import { getModelInstance } from './llmAccessService'
 import { StringOutputParser } from '@langchain/core/output_parsers'
+import chalk from 'chalk'
 
 const config = useRuntimeConfig()
 
@@ -57,23 +58,41 @@ export const generateCode = async (dom: string, task: string) => {
 
   // 新的系统提示词
   const systemTemplate = `
-  Based on the HTML structure and task instructions provided by the user, generate the following object structure:
-  "data":{{
-    "target": "",
-    "parameters": [],
-    "returnValue": [],
-    "code": ""
-  }}
-  where target is the code to get the DOM element to be operated on, parameters are the required parameters, returnValue is the return value of the generated function, and code is the generated function code.
+Based on the HTML structure and task instructions provided by the user, generate the following object structure:
+"data": {{
+  "target": "", 
+  "parameters": [], 
+  "returnValue": [], 
+  "code": "" 
+}}
+where:
+target is the code to get the DOM element to be operated on;
+parameters are the parameters required by code;
+returnValue is the return value of the generated function;
+code is the generated function code, in the form of "function f(para1, para2, ...) {{ xxx }}", where the function parameters correspond to parameters.
 
-  For example:
-  For a page navigation/popup task, target should be the code to get the corresponding DOM element, parameters may include the navigation URL, and returnValue is empty.
-  For a page scroll task, target should be the code to get the corresponding DOM element, parameters may include the scroll destination, and returnValue is empty.
-  For a task to send a request to the backend, target should be the code to get the corresponding DOM element, parameters may include the backend URL, and returnValue is the backend response.
-  For a task to display data, target should be the code to get the corresponding DOM element (such as the display location), parameters may include the data list to be displayed, and returnValue is empty.
+Example 1:
+If the user's task is "When the login button is clicked, send a request to http://localhost:3000/login with username and password parameters", it should return the following JSON string:
+"data": {{ 
+  "target": "document.getElementById('idx')", 
+  "parameters": ['target'], 
+  "returnValue": ['response'], 
+  "code": "function f(target) {{ target.addEventListener('click', async () => {{ const username = document.getElementById('id_username').value; const password = document.getElementById('id_password').value; const response = await fetch(...); return response }}) }}"
+}}
+where idx in target is the id of the login button element; parameters only includes target because the user's task is to execute the corresponding logic when the login button is clicked, so the function needs to receive target as a parameter; id_username and id_password are the ids of the username and password input elements respectively; I have omitted some of the fetch code in the example code, in actual situations it needs to be filled in.
 
-  Please return this object as a JSON string. Do not use markdown syntax like \`\`\`json.
-  `
+Example 2:
+If the user's task is "When the 'Forgot your password?' link is clicked, navigate to the reset page", it should return the following JSON string:
+"data": {{
+  "target": "document.getElementById('idx')",
+  "parameters": ['target', 'reset'], 
+  "returnValue": [], 
+  "code": "function f(target, url) {{ // The code logic is to set the href of target to url }}"
+}} 
+where idx in target is the id of the link element; parameters includes target and the redirect URL 'reset', because the user's task is to execute the redirect logic when the link is clicked, so the function needs to receive target and the redirect URL as parameters; I have omitted some of the code in the example code, in actual situations it needs to be filled in.
+
+Please return this object structure as a JSON string, without using markdown syntax like \`\`\`json.
+`
 
   // 用户提示词
   const humanTemplate = '{dom}、{task}'

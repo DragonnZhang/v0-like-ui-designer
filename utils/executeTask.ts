@@ -74,17 +74,45 @@ function handleJsonString(jsonString: string) {
     data: JSONData
   }
 
-  console.log(`JSON Object:\n${jsonObject}`)
+  console.log('jsonObject:')
+  console.log(jsonObject)
 
   return { ...jsonObject.data }
 }
 
 // 执行代码
 function executeCode(data: JSONData) {
+  // 这里不做解构，因为担心 eval 的变量名和解构变量名冲突
   console.log(`target:\n${data.target}`)
   console.log(`parameters:\n${data.parameters}`)
   console.log(`returnValue:\n${data.returnValue}`)
   console.log(`code:\n${data.code}`)
+
+  let targetCode = ''
+  // 执行 target 代码，获得 target 变量，存储在 window 中
+  if (data.target) {
+    targetCode = `let target = ${data.target}\n`
+  }
+
+  // 处理 parameters
+  if (data.parameters) {
+    data.parameters = data.parameters.map((v) => {
+      if (v === 'target') {
+        return 'target'
+      }
+      if (typeof v === 'string') {
+        return `'${v}'`
+      }
+      return v
+    })
+  }
+
+  // 执行 code 代码中的 f 函数并传参
+  if (data.code) {
+    const code = targetCode + data.code + `\nf(${data.parameters.join(',')})`
+    console.log(code)
+    eval(code)
+  }
 }
 
 // main function
