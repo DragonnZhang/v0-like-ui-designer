@@ -114,7 +114,7 @@ function handleClick(task: string, selectedElements: HTMLElement[]) {
   top: 10px;
   left: 10px;
   height: 32px;
-  width: 600px;
+  width: 400px;
 
   .upper-area {
     display: flex;
