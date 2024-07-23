@@ -15,7 +15,7 @@ const getModelStrategy: {
       modelName: 'gpt-3.5-turbo',
       temperature: config.temperature,
       openAIApiKey: config.openaiApiKey,
-      maxTokens: config.maxTokens,
+      maxTokens: config.maxTokens || -1,
       streaming: config.public.streaming
     }),
   qwen: () =>
@@ -33,10 +33,10 @@ const getModelStrategy: {
     }),
   gemini: () =>
     new ChatGoogleGenerativeAI({
-      modelName: 'gemini-pro',
+      modelName: 'gemini-1.5-pro',
       temperature: config.temperature,
       apiKey: config.googleApiKey,
-      maxOutputTokens: config.maxTokens
+      maxOutputTokens: config.maxTokens || undefined
     })
 }
 

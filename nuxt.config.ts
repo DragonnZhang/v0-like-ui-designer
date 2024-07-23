@@ -11,7 +11,7 @@ export default defineNuxtConfig({
     googleApiKey: '',
     model: 'gemini', // Available choices: openai、qwen、wenxin and gemini
     temperature: 1,
-    maxTokens: 2048,
+    maxTokens: 0, // 0 means returns as many tokens as possible given the prompt and the model's maximum context size
     public: {
       streaming: false // Generate html page in streaming or direct mode
     }
