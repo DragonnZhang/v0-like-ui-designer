@@ -18,8 +18,14 @@
 **response**:
 
 ```json
+success:
 {
   "code": 0,
   "message": "Login success"
+}
+fail:
+{
+  "code": 401,
+  "message": "Login failed"
 }
 ```

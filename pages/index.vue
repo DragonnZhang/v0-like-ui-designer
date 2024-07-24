@@ -110,15 +110,15 @@ const isLoading = ref(false)
 
 const routes = [
   {
-    url: '/experiment/page1',
-    name: 'page1'
+    url: '/experiments/experiment1',
+    name: '实验一：为登录按钮添加登录逻辑'
   },
   {
-    url: '/experiment/page2',
+    url: '/experiments/experiment2',
     name: 'page2'
   },
   {
-    url: '/experiment/page3',
+    url: '/experiments/experiment3',
     name: 'page3'
   }
 ]
