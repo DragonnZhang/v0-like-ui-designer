@@ -107,9 +107,29 @@ async function handleClick(task: string, selectedElements: HTMLElement[]) {
 }
 
 const isLoading = ref(false)
+
+const routes = [
+  {
+    url: 'page1',
+    name: 'page1'
+  },
+  {
+    url: 'page2',
+    name: 'page2'
+  },
+  {
+    url: 'page3',
+    name: 'page3'
+  }
+]
 </script>
 
 <template>
+  <div id="choice">
+    <a v-for="route in routes" :key="route.url" :href="route.url" class="choice__item">{{
+      route.name
+    }}</a>
+  </div>
   <div id="main__container">
     <div
       class="search-bar"
@@ -129,6 +149,22 @@ const isLoading = ref(false)
 </template>
 
 <style scoped lang="scss">
+#choice {
+  width: 100vw;
+  height: 5%;
+  display: flex;
+
+  .choice__item {
+    flex-grow: 1;
+    display: inline-block;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    background-color: #f5f5f5;
+    color: #333;
+  }
+}
 #main__container {
   height: 100%;
   width: 100%;
