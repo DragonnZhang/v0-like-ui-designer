@@ -2,8 +2,6 @@
 import { ref } from 'vue'
 import { inputValue, processClick, clearInfo, selectedElements } from '~/utils/elementSelection'
 import { executeTask } from '~/utils/executeTask'
-import PageTemplate from '~/components/MainPage/PageTemplate.vue'
-import PageTemplateLogin from '~/components/MainPage/PageTemplateLogin.vue'
 import PromptInput from '~/components/MainPage/PromptInput.vue'
 
 const task = ref<string>('')
@@ -15,11 +13,18 @@ onMounted(() => {
     if (activeElement.size !== 0 && !multipleChoiceMode) {
       return
     }
-    if (activeElement.has(e.target as HTMLElement)) {
+    const el = e.target as HTMLElement
+    if (activeElement.has(el)) {
       return
     }
-    activeElement.add(e.target as HTMLElement)
-    processClick(e.target as HTMLElement)
+    if (el.tagName === 'BODY') return
+    if (
+      el.id === 'app' ||
+      !(el.id !== 'main__container' && document.querySelector('#main__container')?.contains(el))
+    )
+      return
+    activeElement.add(el)
+    processClick(el)
   })
 })
 
@@ -52,7 +57,11 @@ onMounted(() => {
     if (activeElement.size !== 0 && !multipleChoiceMode) return
     const el = e.target as HTMLElement
     if (el.tagName === 'BODY') return
-    if (el.id === 'app') return
+    if (
+      el.id === 'app' ||
+      !(el.id !== 'main__container' && document.querySelector('#main__container')?.contains(el))
+    )
+      return
 
     const style = JSON.parse(JSON.stringify(el.style))
     styleMap.set(el, style)
@@ -101,29 +110,38 @@ const isLoading = ref(false)
 </script>
 
 <template>
-  <div
-    class="search-bar"
-    v-show="inputValue.show"
-    :style="{ left: inputValue.left, top: inputValue.top }"
-  >
-    <PromptInput
-      textarea-default-prompt="Your command here."
-      :loading="isLoading"
-      v-model="task"
-      @submit="handleClick(task, selectedElements)"
-    ></PromptInput>
-  </div>
+  <div id="main__container">
+    <div
+      class="search-bar"
+      v-show="inputValue.show"
+      :style="{ left: inputValue.left, top: inputValue.top }"
+    >
+      <PromptInput
+        textarea-default-prompt="Your command here."
+        :loading="isLoading"
+        v-model="task"
+        @submit="handleClick(task, selectedElements)"
+      ></PromptInput>
+    </div>
 
-  <!-- <PageTemplate /> -->
-  <PageTemplateLogin />
+    <NuxtPage />
+  </div>
 </template>
 
 <style scoped lang="scss">
-.search-bar {
-  position: fixed;
-  top: 10px;
-  left: 10px;
-  width: 450px;
-  z-index: 9999;
+#main__container {
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  .search-bar {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    width: 450px;
+    z-index: 9999;
+  }
 }
 </style>
