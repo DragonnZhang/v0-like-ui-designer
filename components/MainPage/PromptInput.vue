@@ -98,6 +98,10 @@ function keydownHandler(event: KeyboardEvent) {
         line-height: 2rem;
         min-width: 50%;
         flex: 1;
+
+        &::-webkit-scrollbar {
+          display: none;
+        }
       }
 
       .button-main {
