@@ -124,9 +124,6 @@ const isLoading = ref(false)
   top: 10px;
   left: 10px;
   width: 450px;
-  border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
   z-index: 9999;
-  box-sizing: content-box;
 }
 </style>
