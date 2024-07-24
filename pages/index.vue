@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { inputValue, processClick, clearInfo, selectedElements } from '~/utils/elementSelection'
 import { executeTask } from '~/utils/executeTask'
 import PageTemplate from '~/components/MainPage/PageTemplate.vue'
+import PageTemplateLogin from '~/components/MainPage/PageTemplateLogin.vue'
 import PromptInput from '~/components/MainPage/PromptInput.vue'
 
 const task = ref<string>('')
@@ -113,7 +114,8 @@ const isLoading = ref(false)
     ></PromptInput>
   </div>
 
-  <PageTemplate />
+  <!-- <PageTemplate /> -->
+  <PageTemplateLogin />
 </template>
 
 <style scoped lang="scss">

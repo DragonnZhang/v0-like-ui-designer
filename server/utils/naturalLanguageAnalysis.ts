@@ -1,6 +1,11 @@
 import { ChatPromptTemplate } from '@langchain/core/prompts'
 import { getModelInstance } from './llmAccessService'
 import { StringOutputParser } from '@langchain/core/output_parsers'
+import { TextLoader } from 'langchain/document_loaders/fs/text'
+import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter'
+import { GoogleGenerativeAIEmbeddings } from '@langchain/google-genai'
+import { MemoryVectorStore } from 'langchain/vectorstores/memory'
+import { Document } from 'langchain/document'
 import chalk from 'chalk'
 
 const config = useRuntimeConfig()
@@ -46,7 +51,7 @@ export const generateHTMLFromNaturalLanguage = async (userPrompt: string) => {
 
 // CHI 2025 论文的提示词
 export const generateCode = async (dom: string, task: string) => {
-  // 新的系统提示词
+  // 系统提示词
   const systemTemplate = `
 Based on the HTML structure and task instructions provided by the user, generate the following object structure:
 "data": {{
@@ -62,14 +67,14 @@ returnValue is the return value of the generated function;
 code is the generated function code, in the form of "function f(para1, para2, ...) {{ xxx }}", where the function parameters correspond to parameters.
 
 Example 1:
-If the user's task is "When the login button is clicked, send a request to http://localhost:3000/login with username and password parameters", it should return the following JSON string:
+If the user's task is "When the login button is clicked, send a request to login interface with username and password parameters", it should return the following JSON string:
 "data": {{ 
   "target": "document.getElementById('idx')", 
-  "parameters": ['target'], 
+  "parameters": ['target', 'This should be the actual backend_url such as http://URL_ADDRESS:URL_PORT/login'], 
   "returnValue": ['response'], 
-  "code": "function f(target) {{ target.addEventListener('click', async () => {{ const username = document.getElementById('id_username').value; const password = document.getElementById('id_password').value; const response = await fetch(...); return response }}) }}"
+  "code": "function f(target, url) {{ target.addEventListener('click', async () => {{ const username = document.getElementById('id_username').value; const password = document.getElementById('id_password').value; const response = await fetch(...); return response }}) }}"
 }}
-where idx in target is the id of the login button element; parameters only includes target because the user's task is to execute the corresponding logic when the login button is clicked, so the function needs to receive target as a parameter; id_username and id_password are the ids of the username and password input elements respectively; I have omitted some of the fetch code in the example code, in actual situations it needs to be filled in.
+where idx in target is the id of the login button element; parameters include target and url because the user's task is to execute the corresponding logic when the login button is clicked, so the function needs to receive target as a parameter, and url is required to send request. I have omitted the url because its value depends on the actual situation, you need to fill in the value according to the actual situation(which may occur in context or task); id_username and id_password are the ids of the username and password input elements respectively; I have omitted some of the fetch code in the example code, in actual situations it needs to be filled in.
 
 Example 2:
 If the user's task is "When the 'Forgot your password?' link is clicked, navigate to the reset page", it should return the following JSON string:
@@ -85,26 +90,76 @@ Pay Attention:
 1. Please return this object structure as a JSON string, without using markdown syntax like \`\`\`json.
 2. When using dom api to select elements, make sure the corresponding elements exist, or the code will throw an error.
 3. No comments allowed in the code because that will cause errors, implement all the codes, never use TODO.
+4. Use the following pieces of context to help you generate the object structure. The context may contain interface information:
+{context}
 `
 
   // 用户提示词
   const humanTemplate = '{dom}、{task}'
 
+  // 提示词模板
   const chatPrompt = ChatPromptTemplate.fromMessages([
     ['system', systemTemplate],
     ['human', humanTemplate]
   ])
 
+  // TODO：这里先用硬编码文件内容作为示例
+  // rag context
+  // const loader = new TextLoader('server/utils/llmAccessService.ts')
+  // const docs = await loader.load()
+  const docs = [
+    new Document({
+      pageContent: `
+Login interface: 
+  url: http://127.0.0.1:3001/login
+  method: post
+  body: {{
+    username: string,
+    password: string
+  }}
+  response: {{
+    status: number,
+    message: string
+  }}
+`
+    })
+  ]
+  const textSplitter = new RecursiveCharacterTextSplitter({
+    chunkSize: 1000,
+    chunkOverlap: 200
+  })
+  const splits = await textSplitter.splitDocuments(docs)
+  const vectorStore = await MemoryVectorStore.fromDocuments(
+    splits,
+    new GoogleGenerativeAIEmbeddings({
+      apiKey: config.googleApiKey,
+      modelName: 'embedding-001'
+    })
+  )
+  const retriever = vectorStore.asRetriever()
+  const context = await retriever.invoke(task)
+
+  console.log(`${chalk.yellow(`${context.length} related context in total:`)}`)
+  for (let i = 0; i < context.length; i++) {
+    console.log(`${chalk.blue(`Context:${i}`)}\n${context[i].pageContent}`)
+  }
+
+  // 直接使用 context 嵌入效果不好，改为使用 contextContent
+  const contextContent = context.map((item) => item.pageContent).join('\n')
+
+  // parser
   const parser = new StringOutputParser()
 
   const chain = chatPrompt.pipe(model).pipe(parser)
 
   const llmResult = config.public.streaming
     ? await chain.stream({
+        context: contextContent,
         dom,
         task
       })
     : await chain.invoke({
+        context: contextContent,
         dom,
         task
       })
