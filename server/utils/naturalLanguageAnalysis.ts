@@ -103,27 +103,10 @@ Pay Attention:
     ['human', humanTemplate]
   ])
 
-  // TODO：这里先用硬编码文件内容作为示例
-  // rag context
-  // const loader = new TextLoader('server/utils/llmAccessService.ts')
-  // const docs = await loader.load()
-  const docs = [
-    new Document({
-      pageContent: `
-Login interface: 
-  url: http://127.0.0.1:3001/login
-  method: post
-  body: {{
-    username: string,
-    password: string
-  }}
-  response: {{
-    status: number,
-    message: string
-  }}
-`
-    })
-  ]
+  // rag context，暂时只支持使用 gemini
+  const loader = new TextLoader('storage/interface.md')
+  const docs = await loader.load()
+
   const textSplitter = new RecursiveCharacterTextSplitter({
     chunkSize: 1000,
     chunkOverlap: 200
