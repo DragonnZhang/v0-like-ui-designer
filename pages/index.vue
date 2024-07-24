@@ -110,15 +110,15 @@ const isLoading = ref(false)
 
 const routes = [
   {
-    url: 'page1',
+    url: '/experiment/page1',
     name: 'page1'
   },
   {
-    url: 'page2',
+    url: '/experiment/page2',
     name: 'page2'
   },
   {
-    url: 'page3',
+    url: '/experiment/page3',
     name: 'page3'
   }
 ]
