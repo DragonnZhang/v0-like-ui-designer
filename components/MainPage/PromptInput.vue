@@ -75,6 +75,63 @@ function keydownHandler(event: KeyboardEvent) {
     border-radius: 24px;
     width: 100%;
     padding: 0 0.75rem 0 1rem;
+    position: relative;
+
+    @media (prefers-color-scheme: light) {
+      &::before {
+        background: linear-gradient(
+          90deg,
+          #e2e2e2 0%,
+          #e2e2e2 25%,
+          #00dc82 50%,
+          #36e4da 75%,
+          #0047e1 100%
+        );
+      }
+    }
+
+    @media (prefers-color-scheme: dark) {
+      &::before {
+        background: linear-gradient(
+          90deg,
+          #303030 0%,
+          #303030 25%,
+          #00dc82 50%,
+          #36e4da 75%,
+          #0047e1 100%
+        );
+      }
+    }
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      border-radius: 24px;
+      padding: 2px;
+      width: 100%;
+      background-size: 400% auto;
+      opacity: 0.5;
+      transition:
+        background-position 0.3s ease-in-out,
+        opacity 0.2s ease-in-out;
+      -webkit-mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      mask:
+        linear-gradient(#fff 0 0) content-box,
+        linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+    }
+
+    &:focus-within::before {
+      background-position: -50% 0;
+      opacity: 1;
+    }
 
     &.loading {
       animation: glow 2s infinite;
@@ -86,6 +143,7 @@ function keydownHandler(event: KeyboardEvent) {
       align-items: center;
 
       .prompt-input-area {
+        z-index: 999;
         resize: none;
         background-color: transparent;
         border: none;
@@ -104,13 +162,16 @@ function keydownHandler(event: KeyboardEvent) {
         }
       }
 
-      .button-main {
-        border: none;
-        display: inline-block;
-        background-color: transparent;
-        color: white;
-        cursor: pointer;
-        height: 38px;
+      .buttons {
+        z-index: 999;
+        .button-main {
+          border: none;
+          display: inline-block;
+          background-color: transparent;
+          color: white;
+          cursor: pointer;
+          height: 38px;
+        }
       }
     }
   }
