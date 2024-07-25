@@ -1,6 +1,8 @@
-# Interfaces
+# Data
 
-## Login
+## Interfaces
+
+### Login
 
 **URL**：<http://localhost:3000/api/chi2025/login>
 
@@ -29,3 +31,14 @@ fail:
   "message": "Login failed"
 }
 ```
+
+## Web Page Routing
+
+- /
+  - index page
+  - experiments
+    - experiment1
+      - index page
+      - welcome page
+    - experiment2
+    - experiment3

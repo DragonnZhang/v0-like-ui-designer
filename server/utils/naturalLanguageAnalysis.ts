@@ -53,7 +53,7 @@ export const generateCode = async (dom: string, task: string) => {
   ])
 
   // rag context，暂时只支持使用 gemini
-  const loader = new TextLoader('storage/interface.md')
+  const loader = new TextLoader('storage/data.md')
   const docs = await loader.load()
 
   const textSplitter = new RecursiveCharacterTextSplitter({
