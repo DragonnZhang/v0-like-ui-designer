@@ -1,8 +1,7 @@
-# Data
+const s = `
+# Interfaces
 
-## Interfaces
-
-### Login
+## Login
 
 **URL**：<http://localhost:3000/api/chi2025/login>
 
@@ -10,16 +9,16 @@
 
 **body**：
 
-```json
+\`\`\`json
 {
   "username": "string",
   "password": "string"
 }
-```
+\`\`\`
 
 **response**:
 
-```json
+\`\`\`json
 success:
 {
   "code": 0,
@@ -30,15 +29,7 @@ fail:
   "code": 401,
   "message": "Login failed"
 }
-```
+\`\`\`
+`
 
-## Web Page Routing
-
-- /
-  - index page
-  - experiments
-    - experiment1
-      - index page
-      - welcome page
-    - experiment2
-    - experiment3
+export default s

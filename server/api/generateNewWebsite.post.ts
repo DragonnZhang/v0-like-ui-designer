@@ -15,6 +15,6 @@ export default defineEventHandler(async (event) => {
     return typeof htmlResponse === 'string' ? htmlResponse : new StreamingTextResponse(htmlResponse)
   } catch (err) {
     console.error(chalk.red(err))
-    return ''
+    return err
   }
 })

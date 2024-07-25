@@ -1,3 +1,4 @@
+const s = `
 Based on the HTML structure and task instructions provided by the user, generate the following object structure:
 "data": {{
   "target": "", 
@@ -37,3 +38,6 @@ Pay Attention:
 3. No comments allowed in the code because that will cause errors, implement all the codes, never use TODO.
 4. Use the following pieces of context to help you generate the object structure. The context may contain interface information:
 {context}
+`
+
+export default s
