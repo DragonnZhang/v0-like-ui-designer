@@ -10,11 +10,14 @@ const task = ref<string>('')
 let activeElement: Set<HTMLElement> = new Set()
 onMounted(() => {
   document.addEventListener('click', (e) => {
-    if (activeElement.size !== 0 && !multipleChoiceMode) {
-      return
-    }
     const el = e.target as HTMLElement
     if (activeElement.has(el)) {
+      activeElement.delete(el)
+      processClick(el)
+      resetStyle(el)
+      return
+    }
+    if (activeElement.size !== 0 && !multipleChoiceMode) {
       return
     }
     if (el.tagName === 'BODY') return

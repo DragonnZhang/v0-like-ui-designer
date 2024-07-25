@@ -58,6 +58,11 @@ const processSelection = (event: Event) => {
 }
 
 const processClick = (el: HTMLElement) => {
+  if (selectedElements.value.includes(el)) {
+    selectedElements.value = selectedElements.value.filter((item) => item !== el)
+    inputValue.show = selectedElements.value.length > 0
+    return
+  }
   selectedElements.value.push(el)
   inputValue.show = true
   inputValue.top = el.offsetTop + el.clientHeight + 'px'
