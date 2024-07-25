@@ -18,14 +18,19 @@ const s = `
 
 **response**:
 
-\`\`\`json
 success:
+\`\`\`json
 {
+  "status": 200,
   "code": 0,
   "message": "Login success"
 }
+\`\`\`
+
 fail:
+\`\`\`json
 {
+  "status": 200,
   "code": 401,
   "message": "Login failed"
 }
