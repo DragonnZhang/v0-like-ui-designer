@@ -1,7 +1,6 @@
 import { ChatPromptTemplate } from '@langchain/core/prompts'
 import { getModelInstance } from './llmAccessService'
 import { StringOutputParser } from '@langchain/core/output_parsers'
-import { TextLoader } from 'langchain/document_loaders/fs/text'
 import { RecursiveCharacterTextSplitter } from 'langchain/text_splitter'
 import { GoogleGenerativeAIEmbeddings } from '@langchain/google-genai'
 import { MemoryVectorStore } from 'langchain/vectorstores/memory'

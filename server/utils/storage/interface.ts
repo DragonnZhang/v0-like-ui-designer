@@ -3,7 +3,7 @@ const s = `
 
 ## Login
 
-**URL**：<http://localhost:3000/api/chi2025/login>
+**URL**：</api/chi2025/login>
 
 **method**：POST
 
