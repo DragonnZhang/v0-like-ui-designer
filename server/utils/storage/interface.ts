@@ -1,9 +1,11 @@
+const config = useRuntimeConfig()
+
 const s = `
 # Interfaces
 
 ## Login
 
-**URL**：</api/chi2025/login>
+**URL**：<${config.backendUrl}/api/chi2025/login>
 
 **method**：POST
 

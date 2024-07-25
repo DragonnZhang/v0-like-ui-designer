@@ -1,9 +1,11 @@
+const config = useRuntimeConfig()
+
 const s = `
 # Routes
 
 ## Web Page Routing
 
-- /
+- /: ${config.backendUrl}
   - index page
   - experiments
     - experiment1
