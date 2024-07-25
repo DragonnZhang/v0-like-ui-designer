@@ -2,8 +2,6 @@ import { generateHTMLFromNaturalLanguage } from '../utils/naturalLanguageAnalysi
 import { StreamingTextResponse } from 'ai'
 import chalk from 'chalk'
 
-export const runtime = 'edge'
-
 export default defineEventHandler(async (event) => {
   const { messages } = await readBody(event)
 

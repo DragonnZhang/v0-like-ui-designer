@@ -7,6 +7,7 @@ import { GoogleGenerativeAIEmbeddings } from '@langchain/google-genai'
 import { MemoryVectorStore } from 'langchain/vectorstores/memory'
 import chalk from 'chalk'
 import * as fs from 'node:fs'
+import * as path from 'node:path'
 
 const config = useRuntimeConfig()
 
@@ -14,7 +15,7 @@ const model = getModelInstance()
 
 // 根据自然语言生成界面的提示词
 export const generateHTMLFromNaturalLanguage = async (userPrompt: string) => {
-  const systemTemplate = fs.readFileSync('server/utils/prompts/generateHTML.txt', 'utf-8')
+  const systemTemplate = fs.readFileSync('./server/utils/prompts/generateHTML.txt', 'utf-8')
 
   const humanTemplate = '{userPrompt}'
 
@@ -41,7 +42,7 @@ export const generateHTMLFromNaturalLanguage = async (userPrompt: string) => {
 // CHI 2025 论文的提示词
 export const generateCode = async (dom: string, task: string) => {
   // 系统提示词
-  const systemTemplate = fs.readFileSync('server/utils/prompts/chi2025.txt', 'utf-8')
+  const systemTemplate = fs.readFileSync(path.resolve(__dirname, './prompts/chi2025.txt'), 'utf-8')
 
   // 用户提示词
   const humanTemplate = '{dom}、{task}'
@@ -53,7 +54,7 @@ export const generateCode = async (dom: string, task: string) => {
   ])
 
   // rag context，暂时只支持使用 gemini
-  const loader = new TextLoader('storage/data.md')
+  const loader = new TextLoader(path.resolve(__dirname, '../../storage/data.md'))
   const docs = await loader.load()
 
   const textSplitter = new RecursiveCharacterTextSplitter({

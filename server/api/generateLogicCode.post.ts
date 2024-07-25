@@ -2,8 +2,6 @@ import { generateCode } from '../utils/naturalLanguageAnalysis'
 import { StreamingTextResponse } from 'ai'
 import chalk from 'chalk'
 
-export const runtime = 'edge'
-
 export default defineEventHandler(async (event) => {
   const { domString, task } = await readBody(event)
 
