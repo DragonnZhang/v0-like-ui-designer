@@ -55,7 +55,7 @@ export const generateCode = async (dom: string, task: string) => {
     ['human', humanTemplate]
   ])
 
-  // rag context，暂时只支持使用 gemini
+  // rag context，暂时使用谷歌提供的嵌入
   const docs = [
     new Document({
       pageContent: interfaceInfo

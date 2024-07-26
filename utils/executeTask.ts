@@ -35,7 +35,7 @@ function elementPreprocessing(selectedElements: HTMLElement[]) {
     return selectedElement.cloneNode(true)
   }) as HTMLElement[]
   cloned.forEach((v) => {
-    removeClass(v)
+    // removeClass(v)
     removeSvg(v)
   })
   console.log(cloned)
@@ -97,7 +97,7 @@ function executeCode(data: JSONData) {
   // 处理 parameters
   if (data.parameters) {
     data.parameters = data.parameters.map((v) => {
-      if (v === 'target' || v === 'targets') {
+      if (['target', 'targets'].includes(v)) {
         return 'target'
       }
       if (typeof v === 'string') {
@@ -110,7 +110,7 @@ function executeCode(data: JSONData) {
   // 执行 code 代码中的 f 函数并传参
   if (data.code) {
     const code = targetCode + data.code + `\nf(${data.parameters.join(',')})`
-    console.log(code)
+    console.log(`Eval code:\n${code}`)
     eval(code)
   }
 }

@@ -9,7 +9,7 @@ export default defineNuxtConfig({
     baiduApiKey: '',
     baiduSecretKey: '',
     googleApiKey: '',
-    model: 'gemini', // Available choices: openai、qwen、wenxin and gemini
+    model: 'gemini', // Available choices: openai、qwen、baidu and gemini（百度千帆用不了，效果也不行，别用了；qwen 效果也很差）
     temperature: 0,
     maxTokens: 0, // 0 means returns as many tokens as possible given the prompt and the model's maximum context size
     backendUrl: '',

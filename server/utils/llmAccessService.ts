@@ -1,6 +1,6 @@
 import { ChatOpenAI } from '@langchain/openai'
 import { ChatAlibabaTongyi } from '@langchain/community/chat_models/alibaba_tongyi'
-import { ChatBaiduWenxin } from '@langchain/community/chat_models/baiduwenxin'
+import { ChatBaiduQianfan } from '@langchain/baidu-qianfan'
 import { ChatGoogleGenerativeAI } from '@langchain/google-genai'
 import { type BaseChatModel } from '@langchain/core/language_models/chat_models'
 import { type modelType } from './type'
@@ -25,18 +25,21 @@ const getModelStrategy: {
       alibabaApiKey: config.qwenApiKey,
       streaming: config.public.streaming
     }),
-  wenxin: () =>
-    new ChatBaiduWenxin({
-      modelName: 'ERNIE-Bot-turbo',
-      baiduApiKey: config.baiduApiKey,
-      baiduSecretKey: config.baiduSecretKey
+  baidu: () =>
+    new ChatBaiduQianfan({
+      modelName: 'ERNIE-Speed-128K',
+      temperature: config.temperature,
+      qianfanAccessKey: config.baiduApiKey,
+      qianfanSecretKey: config.baiduSecretKey,
+      streaming: config.public.streaming
     }),
   gemini: () =>
     new ChatGoogleGenerativeAI({
       modelName: 'gemini-1.5-pro',
       temperature: config.temperature,
       apiKey: config.googleApiKey,
-      maxOutputTokens: config.maxTokens || undefined
+      maxOutputTokens: config.maxTokens || undefined,
+      streaming: config.public.streaming
     })
 }
 

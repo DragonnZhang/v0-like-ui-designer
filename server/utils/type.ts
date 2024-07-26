@@ -1,1 +1,1 @@
-export type modelType = 'openai' | 'qwen' | 'wenxin' | 'gemini'
+export type modelType = 'openai' | 'qwen' | 'baidu' | 'gemini'

@@ -21,6 +21,7 @@
     "vue-router": "^4.4.0"
   },
   "dependencies": {
+    "@langchain/baidu-qianfan": "^0.0.1",
     "@langchain/community": "^0.2.20",
     "@langchain/google-genai": "^0.0.23",
     "@langchain/openai": "^0.2.5",
