@@ -179,7 +179,7 @@ const routes = [
     position: fixed;
     top: 10px;
     left: 10px;
-    width: 450px;
+    width: 400px;
     z-index: 9999;
   }
 }

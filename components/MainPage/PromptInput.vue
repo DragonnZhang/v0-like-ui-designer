@@ -1,8 +1,15 @@
 <script setup lang="ts">
-defineProps<{
-  textareaDefaultPrompt: string
-  loading: boolean
-}>()
+const props = withDefaults(
+  defineProps<{
+    textareaDefaultPrompt: string
+    loading: boolean
+    heightLimit?: number
+  }>(),
+  {
+    heightLimit: 83
+  }
+)
+
 const modelValue = defineModel<string>({ required: true })
 const emit = defineEmits<{
   submit: [value: string]
@@ -37,6 +44,22 @@ function keydownHandler(event: KeyboardEvent) {
     submit(event)
   }
 }
+
+// 高度随内容自动变化
+const inputRef = ref()
+function adjustInputHeight() {
+  const textarea = inputRef.value
+  if (textarea) {
+    textarea.style.height = 'auto'
+    const scrollHeight = textarea.scrollHeight
+    console.log(scrollHeight)
+    if (scrollHeight <= props.heightLimit) {
+      textarea.style = `height: ${scrollHeight}px; overflow-y: hidden;`
+    } else {
+      textarea.style = `height: ${props.heightLimit}px;`
+    }
+  }
+}
 </script>
 
 <template>
@@ -44,9 +67,11 @@ function keydownHandler(event: KeyboardEvent) {
     <div class="prompt-input-wrapper" :class="{ loading }">
       <div class="prompt-input-content">
         <textarea
+          ref="inputRef"
           @compositionstart="isComposing = true"
           @compositionend="isComposing = false"
           @keydown="keydownHandler"
+          @input="adjustInputHeight"
           class="prompt-input-area"
           :placeholder="textareaDefaultPrompt"
           v-model="modelValue"
@@ -74,7 +99,7 @@ function keydownHandler(event: KeyboardEvent) {
     background-color: var(--prompt-input-background);
     border-radius: 24px;
     width: 100%;
-    padding: 0 0.75rem 0 1rem;
+    padding: 0 16px;
     position: relative;
 
     @media (prefers-color-scheme: light) {
@@ -141,20 +166,18 @@ function keydownHandler(event: KeyboardEvent) {
       font-size: 12px;
       display: flex;
       align-items: center;
+      padding: 8px 0;
 
       .prompt-input-area {
         z-index: 999;
         resize: none;
         background-color: transparent;
         border: none;
-        padding: 0.75rem 0.5rem 0.75rem 0.25rem;
         color: white;
         outline: 2px solid transparent;
         outline-offset: 2px;
-        height: 47px;
         box-sizing: border-box;
-        line-height: 2rem;
-        min-width: 50%;
+        // min-width: 30%;
         flex: 1;
 
         &::-webkit-scrollbar {
@@ -163,6 +186,7 @@ function keydownHandler(event: KeyboardEvent) {
       }
 
       .buttons {
+        margin-left: 16px;
         z-index: 999;
         .button-main {
           border: none;
