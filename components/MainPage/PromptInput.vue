@@ -40,7 +40,7 @@ function submit(event: KeyboardEvent) {
 function keydownHandler(event: KeyboardEvent) {
   if (event.key === 'Tab') {
     autoComplete(event)
-  } else if (event.key === 'Enter' && !isComposing) {
+  } else if (!event.shiftKey && event.key === 'Enter' && !isComposing) {
     submit(event)
   }
 }
