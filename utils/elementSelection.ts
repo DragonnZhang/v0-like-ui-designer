@@ -59,14 +59,17 @@ const processSelection = (event: Event) => {
 
 const processClick = (el: HTMLElement) => {
   if (selectedElements.value.includes(el)) {
+    // 多选元素重复点击，则删除该元素
     selectedElements.value = selectedElements.value.filter((item) => item !== el)
     inputValue.show = selectedElements.value.length > 0
+    resetBorderStyle(el)
     return
   }
   selectedElements.value.push(el)
   inputValue.show = true
   inputValue.top = el.offsetTop + el.clientHeight + 'px'
   inputValue.left = el.offsetLeft + el.clientWidth + 'px'
+  addBorderStyle(el, false)
 }
 
 const clearInfo = () => {
@@ -74,4 +77,48 @@ const clearInfo = () => {
   selectedElements.value = []
 }
 
-export { inputValue, processSelection, selectedElements, processClick, clearInfo }
+const styleMap = new Map<HTMLElement, CSSStyleDeclaration>()
+
+const addBorderStyle = (el: HTMLElement, rememberStyle = true) => {
+  if (rememberStyle) {
+    const style = JSON.parse(JSON.stringify(el.style))
+    styleMap.set(el, style)
+  }
+  el.style.border = '1px dashed red'
+}
+
+const resetBorderStyle = (target: HTMLElement) => {
+  const style = styleMap.get(target)
+
+  if (!style) {
+    target.style.border = 'none'
+    return
+  }
+
+  // 样式重新赋值
+  target.style.borderBottomColor = style.borderBottomColor
+  target.style.borderBottomStyle = style.borderBottomStyle
+  target.style.borderBottomWidth = style.borderBottomWidth
+
+  target.style.borderRightColor = style.borderRightColor
+  target.style.borderRightStyle = style.borderRightStyle
+  target.style.borderRightWidth = style.borderRightWidth
+
+  target.style.borderTopColor = style.borderTopColor
+  target.style.borderTopStyle = style.borderTopStyle
+  target.style.borderTopWidth = style.borderTopWidth
+
+  target.style.borderLeftColor = style.borderLeftColor
+  target.style.borderLeftStyle = style.borderLeftStyle
+  target.style.borderLeftWidth = style.borderLeftWidth
+}
+
+export {
+  inputValue,
+  processSelection,
+  selectedElements,
+  processClick,
+  clearInfo,
+  addBorderStyle,
+  resetBorderStyle
+}

@@ -1,6 +1,13 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import { inputValue, processClick, clearInfo, selectedElements } from '~/utils/elementSelection'
+import {
+  inputValue,
+  processClick,
+  clearInfo,
+  selectedElements,
+  addBorderStyle,
+  resetBorderStyle
+} from '~/utils/elementSelection'
 import { executeTask } from '~/utils/executeTask'
 import PromptInput from '~/components/MainPage/PromptInput.vue'
 
@@ -25,7 +32,6 @@ onMounted(() => {
     if (activeElement.has(el)) {
       activeElement.delete(el)
       processClick(el)
-      resetStyle(el)
       return
     }
     if (activeElement.size !== 0 && !multipleChoiceMode) {
@@ -43,8 +49,6 @@ const multipleChoiceKey = 'MetaLeft'
 const exitKey = 'Escape'
 let multipleChoiceMode = false
 
-const styleMap = new Map<HTMLElement, CSSStyleDeclaration>()
-
 onMounted(() => {
   document.addEventListener('keydown', (e: KeyboardEvent) => {
     if (e.code === multipleChoiceKey) {
@@ -53,7 +57,7 @@ onMounted(() => {
     if (e.code === exitKey) {
       clearInfo()
       activeElement.forEach((el) => {
-        resetStyle(el)
+        resetBorderStyle(el)
       })
       activeElement.clear()
     }
@@ -68,42 +72,14 @@ onMounted(() => {
     const el = e.target as HTMLElement
     if (isIrrelevantElement(el)) return
 
-    const style = JSON.parse(JSON.stringify(el.style))
-    styleMap.set(el, style)
-    el.style.border = '1px dashed red'
+    addBorderStyle(el)
   })
   document.addEventListener('mouseout', (e: MouseEvent) => {
     if (activeElement.has(e.target as HTMLElement)) return // 如果移出按钮则返回
     const target = e.target as HTMLElement
-    resetStyle(target)
+    resetBorderStyle(target)
   })
 })
-
-function resetStyle(target: HTMLElement) {
-  const style = styleMap.get(target)
-
-  if (!style) {
-    target.style.border = 'none'
-    return
-  }
-
-  // 样式重新赋值
-  target.style.borderBottomColor = style.borderBottomColor
-  target.style.borderBottomStyle = style.borderBottomStyle
-  target.style.borderBottomWidth = style.borderBottomWidth
-
-  target.style.borderRightColor = style.borderRightColor
-  target.style.borderRightStyle = style.borderRightStyle
-  target.style.borderRightWidth = style.borderRightWidth
-
-  target.style.borderTopColor = style.borderTopColor
-  target.style.borderTopStyle = style.borderTopStyle
-  target.style.borderTopWidth = style.borderTopWidth
-
-  target.style.borderLeftColor = style.borderLeftColor
-  target.style.borderLeftStyle = style.borderLeftStyle
-  target.style.borderLeftWidth = style.borderLeftWidth
-}
 
 async function handleClick(task: string, selectedElements: HTMLElement[]) {
   isLoading.value = true
