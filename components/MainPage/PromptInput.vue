@@ -63,16 +63,16 @@ function adjustInputHeight() {
 </script>
 
 <template>
-  <div class="prompt-input-container">
-    <div class="prompt-input-wrapper" :class="{ loading }">
-      <div class="prompt-input-content">
+  <div id="prompt__input">
+    <div class="prompt-input__wrapper" :class="{ loading }">
+      <div class="prompt-input__content">
         <textarea
           ref="inputRef"
           @compositionstart="isComposing = true"
           @compositionend="isComposing = false"
           @keydown="keydownHandler"
           @input="adjustInputHeight"
-          class="prompt-input-area"
+          class="prompt-input__area"
           :placeholder="textareaDefaultPrompt"
           v-model="modelValue"
           maxlength="1000"
@@ -81,7 +81,7 @@ function adjustInputHeight() {
           rows="1"
         />
         <div class="buttons">
-          <button class="button-main" @click="$emit('submit', modelValue)">Confirm</button>
+          <button class="button__main" @click="$emit('submit', modelValue)">Confirm</button>
         </div>
       </div>
     </div>
@@ -89,13 +89,13 @@ function adjustInputHeight() {
 </template>
 
 <style scoped lang="scss">
-.prompt-input-container {
+#prompt__input {
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
 
-  .prompt-input-wrapper {
+  .prompt-input__wrapper {
     background-color: var(--prompt-input-background);
     border-radius: 24px;
     width: 100%;
@@ -162,13 +162,13 @@ function adjustInputHeight() {
       animation: glow 2s infinite;
     }
 
-    .prompt-input-content {
+    .prompt-input__content {
       font-size: 12px;
       display: flex;
       align-items: center;
       padding: 8px 0;
 
-      .prompt-input-area {
+      .prompt-input__area {
         z-index: 999;
         resize: none;
         background-color: transparent;
@@ -188,7 +188,7 @@ function adjustInputHeight() {
       .buttons {
         margin-left: 16px;
         z-index: 999;
-        .button-main {
+        .button__main {
           border: none;
           display: inline-block;
           background-color: transparent;

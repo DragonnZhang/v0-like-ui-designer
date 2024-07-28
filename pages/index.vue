@@ -6,6 +6,17 @@ import PromptInput from '~/components/MainPage/PromptInput.vue'
 
 const task = ref<string>('')
 
+function isIrrelevantElement(el: HTMLElement): boolean {
+  if (el.tagName === 'BODY') return true
+  if (
+    el.id === 'app' ||
+    document.querySelector('#prompt__input')?.contains(el) ||
+    !(el.id !== 'main__container' && document.querySelector('#main__container')?.contains(el))
+  )
+    return true
+  return false
+}
+
 // listen mouseup event
 let activeElement: Set<HTMLElement> = new Set()
 onMounted(() => {
@@ -20,12 +31,8 @@ onMounted(() => {
     if (activeElement.size !== 0 && !multipleChoiceMode) {
       return
     }
-    if (el.tagName === 'BODY') return
-    if (
-      el.id === 'app' ||
-      !(el.id !== 'main__container' && document.querySelector('#main__container')?.contains(el))
-    )
-      return
+    if (isIrrelevantElement(el)) return
+
     activeElement.add(el)
     processClick(el)
   })
@@ -59,12 +66,7 @@ onMounted(() => {
   document.addEventListener('mouseover', (e: MouseEvent) => {
     if (activeElement.size !== 0 && !multipleChoiceMode) return
     const el = e.target as HTMLElement
-    if (el.tagName === 'BODY') return
-    if (
-      el.id === 'app' ||
-      !(el.id !== 'main__container' && document.querySelector('#main__container')?.contains(el))
-    )
-      return
+    if (isIrrelevantElement(el)) return
 
     const style = JSON.parse(JSON.stringify(el.style))
     styleMap.set(el, style)
