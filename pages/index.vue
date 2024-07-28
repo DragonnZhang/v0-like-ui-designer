@@ -25,21 +25,18 @@ function isIrrelevantElement(el: HTMLElement): boolean {
 }
 
 // listen mouseup event
-let activeElement: Set<HTMLElement> = new Set()
 onMounted(() => {
   document.addEventListener('click', (e) => {
     const el = e.target as HTMLElement
-    if (activeElement.has(el)) {
-      activeElement.delete(el)
+    if (selectedElements.value.includes(el)) {
       processClick(el)
       return
     }
-    if (activeElement.size !== 0 && !multipleChoiceMode) {
+    if (selectedElements.value.length !== 0 && !multipleChoiceMode) {
       return
     }
     if (isIrrelevantElement(el)) return
 
-    activeElement.add(el)
     processClick(el)
   })
 })
@@ -55,11 +52,10 @@ onMounted(() => {
       multipleChoiceMode = true
     }
     if (e.code === exitKey) {
-      clearInfo()
-      activeElement.forEach((el) => {
+      selectedElements.value.forEach((el) => {
         resetBorderStyle(el)
       })
-      activeElement.clear()
+      clearInfo()
     }
   })
   document.addEventListener('keyup', (e: KeyboardEvent) => {
@@ -68,14 +64,14 @@ onMounted(() => {
     }
   })
   document.addEventListener('mouseover', (e: MouseEvent) => {
-    if (activeElement.size !== 0 && !multipleChoiceMode) return
+    if (selectedElements.value.length !== 0 && !multipleChoiceMode) return
     const el = e.target as HTMLElement
     if (isIrrelevantElement(el)) return
 
     addBorderStyle(el)
   })
   document.addEventListener('mouseout', (e: MouseEvent) => {
-    if (activeElement.has(e.target as HTMLElement)) return // 如果移出按钮则返回
+    if (selectedElements.value.includes(e.target as HTMLElement)) return // 如果移出按钮则返回
     const target = e.target as HTMLElement
     resetBorderStyle(target)
   })
