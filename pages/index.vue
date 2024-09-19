@@ -10,6 +10,7 @@ import {
 } from '~/utils/elementSelection'
 import { executeTask } from '~/utils/executeTask'
 import PromptInput from '~/components/MainPage/PromptInput.vue'
+import UserBehaviorTracker from '~/utils/behaviorRecord.js'
 
 const task = ref<string>('')
 
@@ -39,6 +40,11 @@ onMounted(() => {
 
     processClick(el)
   })
+
+  const tracker = new UserBehaviorTracker()
+  setTimeout(() => {
+    console.log(tracker.getEventLog())
+  }, 10000)
 })
 
 // use key to enable multiple choice
