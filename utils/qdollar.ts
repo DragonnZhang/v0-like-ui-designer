@@ -1,4 +1,4 @@
-class Point {
+export class Point {
   X: number
   Y: number
   ID: number
@@ -36,7 +36,6 @@ class Result {
   }
 }
 
-const NumPointClouds = 16
 const NumPoints = 32
 const Origin = new Point(0, 0, 0)
 const MaxIntCoord = 1024 // (IntX, IntY) range from [0, MaxIntCoord - 1]
@@ -49,7 +48,7 @@ export class QDollarRecognizer {
     //
     // one predefined point-cloud for each gesture
     //
-    this.PointClouds = new Array(NumPointClouds)
+    this.PointClouds = new Array()
     this.PointClouds[0] = new PointCloud(
       'T',
       new Array(
@@ -236,86 +235,6 @@ export class QDollarRecognizer {
         new Point(525, 388, 2)
       )
     )
-    this.PointClouds[12] = new PointCloud(
-      'pitchfork',
-      new Array(
-        new Point(38, 470, 1),
-        new Point(36, 476, 1),
-        new Point(36, 482, 1),
-        new Point(37, 489, 1),
-        new Point(39, 496, 1),
-        new Point(42, 500, 1),
-        new Point(46, 503, 1),
-        new Point(50, 507, 1),
-        new Point(56, 509, 1),
-        new Point(63, 509, 1),
-        new Point(70, 508, 1),
-        new Point(75, 506, 1),
-        new Point(79, 503, 1),
-        new Point(82, 499, 1),
-        new Point(85, 493, 1),
-        new Point(87, 487, 1),
-        new Point(88, 480, 1),
-        new Point(88, 474, 1),
-        new Point(87, 468, 1),
-        new Point(62, 464, 2),
-        new Point(62, 571, 2)
-      )
-    )
-    this.PointClouds[13] = new PointCloud(
-      'six-point star',
-      new Array(
-        new Point(177, 554, 1),
-        new Point(223, 476, 1),
-        new Point(268, 554, 1),
-        new Point(183, 554, 1),
-        new Point(177, 490, 2),
-        new Point(223, 568, 2),
-        new Point(268, 490, 2),
-        new Point(183, 490, 2)
-      )
-    )
-    this.PointClouds[14] = new PointCloud(
-      'asterisk',
-      new Array(
-        new Point(325, 499, 1),
-        new Point(417, 557, 1),
-        new Point(417, 499, 2),
-        new Point(325, 557, 2),
-        new Point(371, 486, 3),
-        new Point(371, 571, 3)
-      )
-    )
-    this.PointClouds[15] = new PointCloud(
-      'half-note',
-      new Array(
-        new Point(546, 465, 1),
-        new Point(546, 531, 1),
-        new Point(540, 530, 2),
-        new Point(536, 529, 2),
-        new Point(533, 528, 2),
-        new Point(529, 529, 2),
-        new Point(524, 530, 2),
-        new Point(520, 532, 2),
-        new Point(515, 535, 2),
-        new Point(511, 539, 2),
-        new Point(508, 545, 2),
-        new Point(506, 548, 2),
-        new Point(506, 554, 2),
-        new Point(509, 558, 2),
-        new Point(512, 561, 2),
-        new Point(517, 564, 2),
-        new Point(521, 564, 2),
-        new Point(527, 563, 2),
-        new Point(531, 560, 2),
-        new Point(535, 557, 2),
-        new Point(538, 553, 2),
-        new Point(542, 548, 2),
-        new Point(544, 544, 2),
-        new Point(546, 540, 2),
-        new Point(546, 536, 2)
-      )
-    )
   }
   //
   // The $Q Point-Cloud Recognizer API begins here -- 3 methods: Recognize(), AddGesture(), DeleteUserGestures()
@@ -350,10 +269,6 @@ export class QDollarRecognizer {
     }
     return num
   }
-  deleteUserGestures() {
-    this.PointClouds.length = NumPointClouds // clears any beyond the original set
-    return NumPointClouds
-  }
 }
 //
 // Private helper functions from here on down
@@ -375,7 +290,7 @@ function CloudMatch(candidate: PointCloud, template: PointCloud, minSoFar: numbe
 }
 function CloudDistance(pts1: Point[], pts2: Point[], start: number, minSoFar: number) {
   var n = pts1.length
-  var unmatched = new Array() // indices for pts2 that are not matched
+  var unmatched = new Array<number>() // indices for pts2 that are not matched
   for (var j = 0; j < n; j++) unmatched[j] = j
   var i = start // start matching with point 'start' from pts1
   var weight = n // weights decrease from n to 1
@@ -400,7 +315,7 @@ function CloudDistance(pts1: Point[], pts2: Point[], start: number, minSoFar: nu
 }
 function ComputeLowerBound(pts1: Point[], pts2: Point[], step: number, LUT: number[][]) {
   var n = pts1.length
-  var LB = new Array(Math.floor(n / step) + 1)
+  var LB = new Array<number>(Math.floor(n / step) + 1)
   var SAT = new Array(n)
   LB[0] = 0.0
   for (var i = 0; i < n; i++) {
@@ -452,7 +367,7 @@ function Scale(points: Point[]) {
     maxY = Math.max(maxY, points[i].Y)
   }
   var size = Math.max(maxX - minX, maxY - minY)
-  var newpoints = new Array()
+  var newpoints = new Array<Point>()
   for (var i = 0; i < points.length; i++) {
     var qx = (points[i].X - minX) / size
     var qy = (points[i].Y - minY) / size
@@ -463,7 +378,7 @@ function Scale(points: Point[]) {
 function TranslateTo(points: Point[], pt: Point) {
   // translates points' centroid to pt
   var c = Centroid(points)
-  var newpoints = new Array()
+  var newpoints = new Array<Point>()
   for (var i = 0; i < points.length; i++) {
     var qx = points[i].X + pt.X - c.X
     var qy = points[i].Y + pt.Y - c.Y
@@ -497,7 +412,7 @@ function MakeIntCoords(points: Point[]) {
   }
   return points
 }
-function ComputeLUT(points: Point[]) {
+function ComputeLUT(points: Point[]): number[][] {
   var LUT = new Array()
   for (var i = 0; i < LUTSize; i++) LUT[i] = new Array()
 

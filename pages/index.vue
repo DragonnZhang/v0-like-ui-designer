@@ -11,6 +11,7 @@ import {
 import { executeTask } from '~/utils/executeTask'
 import PromptInput from '~/components/MainPage/PromptInput.vue'
 import UserBehaviorTracker from '~/utils/behaviorRecord.js'
+import { QDollarRecognizer, Point } from '~/utils/qdollar'
 
 const task = ref<string>('')
 
@@ -42,9 +43,25 @@ onMounted(() => {
   })
 
   const tracker = new UserBehaviorTracker()
-  setTimeout(() => {
-    console.log(tracker.getEventLog())
-  }, 10000)
+  const qDollarRecognizer = new QDollarRecognizer()
+
+  document.addEventListener('contextmenu', (event) => {
+    event.preventDefault() // 阻止默认右键菜单
+
+    const log = tracker.getEventLog()
+    console.log('Log: ', log)
+
+    // 查看 detail，筛选出有 x，y 的，并且只获取
+    const filteredPoints = log
+      .filter((item) => item.details.x !== undefined && item.details.y !== undefined)
+      .map((item) => {
+        return new Point(item.details.x!, item.details.y!, item.details.id)
+      })
+    console.log(filteredPoints)
+    console.log('手势：', qDollarRecognizer.recognize(filteredPoints)) // 打印事件日志
+    tracker.clearEventLog()
+    tracker.resetDrawingIndex()
+  })
 })
 
 // use key to enable multiple choice
