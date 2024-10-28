@@ -8,12 +8,19 @@ type UserAction = {
 
 class UserBehaviorTracker {
   private eventLog: UserAction[] = []
-  private isDrawing: boolean = false // 标记是否在按下鼠标的状态
   private drawingTime = 0
   private drawingIndex = 0 // 每次绘画线的 id
+  private isRecording: boolean = false // 标记是否正在记录
+  private recordingEvents: UserAction[] = [] // 记录绘画事件的数组
 
-  constructor(private throttleTime: number = 30) {
-    this.initEventListeners()
+  constructor(
+    private key: string = 'Meta',
+    private throttleTime: number = 30
+  ) {
+    // 确定有 dom 元素
+    if (document) {
+      this.initEventListeners()
+    }
   }
 
   // 初始化事件监听
@@ -21,7 +28,7 @@ class UserBehaviorTracker {
     // 鼠标按下时开始记录
     document.addEventListener('mousedown', this.startDrawing.bind(this))
 
-    // 鼠标移动事件（只有在按下鼠标时才记录）
+    // 鼠标移动事件（无论是否按下鼠标都记录）
     document.addEventListener(
       'mousemove',
       throttle(this.recordMouseMove.bind(this), this.throttleTime)
@@ -43,19 +50,16 @@ class UserBehaviorTracker {
   private startDrawing(event: MouseEvent) {
     this.drawingIndex++
     this.drawingTime = Date.now()
-    this.isDrawing = true
   }
 
   // 停止绘制
   private stopDrawing(event: MouseEvent) {
     this.drawingTime = Date.now() - this.drawingTime
-    this.isDrawing = false
   }
 
-  // 记录鼠标移动事件（仅在 isDrawing 为 true 时记录）
+  // 记录鼠标移动事件（无论是否按下鼠标都记录）
   private recordMouseMove(event: MouseEvent) {
-    if (!this.isDrawing) return // 如果没有按下鼠标，不记录
-    this.eventLog.push({
+    const action: UserAction = {
       type: 'mousemove',
       timestamp: Date.now(),
       details: {
@@ -63,35 +67,45 @@ class UserBehaviorTracker {
         y: event.clientY,
         id: this.drawingIndex
       }
-    })
-    console.log('Mouse move recorded:', event.clientX, event.clientY)
+    }
+    this.eventLog.push(action)
+    if (this.isRecording) {
+      this.recordingEvents.push(action)
+    }
   }
 
   // 记录鼠标点击事件
   private recordClick(event: MouseEvent) {
     if (this.drawingTime > 200) return // 如果正在绘制，则不记录点击事件
 
-    this.eventLog.push({
+    const action: UserAction = {
       type: 'click',
       timestamp: Date.now(),
       details: {
         x: event.clientX,
-        y: event.clientY
+        y: event.clientY,
+        id: this.drawingIndex
       }
-    })
-    console.log('Mouse click recorded:', event.clientX, event.clientY)
+    }
+    this.eventLog.push(action)
+    if (this.isRecording) {
+      this.recordingEvents.push(action)
+    }
   }
 
   // 记录键盘按键事件
   private recordKeyPress(event: KeyboardEvent) {
-    this.eventLog.push({
+    const action: UserAction = {
       type: 'keypress',
       timestamp: Date.now(),
       details: {
         key: event.key
       }
-    })
-    console.log('Key press recorded:', event.key)
+    }
+    this.eventLog.push(action)
+    if (this.isRecording) {
+      this.recordingEvents.push(action)
+    }
   }
 
   public resetDrawingIndex() {
@@ -106,6 +120,34 @@ class UserBehaviorTracker {
   // 清除事件日志
   public clearEventLog() {
     this.eventLog = []
+  }
+
+  // 异步记录用户绘画笔迹
+  public async recordDrawing(): Promise<UserAction[]> {
+    return new Promise((resolve) => {
+      let controlPressed = false
+
+      const handleKeyDown = (event: KeyboardEvent) => {
+        if (event.key === this.key) {
+          if (!controlPressed) {
+            // 开始记录
+            this.isRecording = true
+            this.recordingEvents = []
+            controlPressed = true
+            console.log('开始记录绘画笔迹')
+          } else {
+            // 结束记录
+            this.isRecording = false
+            controlPressed = false
+            document.removeEventListener('keydown', handleKeyDown)
+            console.log('结束记录绘画笔迹')
+            resolve(this.recordingEvents)
+          }
+        }
+      }
+
+      document.addEventListener('keydown', handleKeyDown)
+    })
   }
 }
 

@@ -6,7 +6,21 @@ import { type BaseChatModel } from '@langchain/core/language_models/chat_models'
 
 type modelType = 'openai' | 'qwen' | 'baidu' | 'gemini'
 
-const config = useRuntimeConfig()
+const config = {
+  openaiApiKey: '',
+  qwenApiKey: '',
+  baiduApiKey: '',
+  baiduSecretKey: '',
+  googleApiKey: 'AIzaSyBsYDeJJ9w5ehH0x_8gAzhRHuYtaOcv3CY',
+  model: 'gemini', // Available choices: openai、qwen、baidu and gemini（百度千帆用不了，效果也不行，别用了；qwen 效果也很差）
+  temperature: 1,
+  maxTokens: 0, // 0 means returns as many tokens as possible given the prompt and the model's maximum context size
+  backendUrl: 'http://localhost:3000',
+  public: {
+    streaming: false // Generate html page in streaming or direct mode
+  },
+  maxRetries: 1
+}
 
 const getModelStrategy: {
   [key in modelType]: () => BaseChatModel
@@ -36,7 +50,7 @@ const getModelStrategy: {
     }),
   gemini: () =>
     new ChatGoogleGenerativeAI({
-      modelName: 'gemini-1.5-pro',
+      modelName: 'gemini-1.5-flash',
       temperature: config.temperature,
       apiKey: config.googleApiKey,
       maxOutputTokens: config.maxTokens || undefined,

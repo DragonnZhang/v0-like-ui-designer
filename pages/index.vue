@@ -12,8 +12,9 @@ import { executeTask } from '~/utils/executeTask'
 import PromptInput from '~/components/MainPage/PromptInput.vue'
 import UserBehaviorTracker from '~/utils/behaviorRecord.js'
 import { QDollarRecognizer, Point } from '~/utils/qdollar'
+import { handleUserInput } from '~/utils/agent'
 
-const task = ref<string>('')
+const userTask = ref<string>('')
 
 function isIrrelevantElement(el: HTMLElement): boolean {
   if (el.tagName === 'BODY') return true
@@ -25,6 +26,9 @@ function isIrrelevantElement(el: HTMLElement): boolean {
     return true
   return false
 }
+
+// 记录的是 F1 键
+const gestureRecorder = new UserBehaviorTracker('F1')
 
 // listen mouseup event
 onMounted(() => {
@@ -42,26 +46,24 @@ onMounted(() => {
     processClick(el)
   })
 
-  const tracker = new UserBehaviorTracker()
-  const qDollarRecognizer = new QDollarRecognizer()
+  // 记录用户手势，当按下按键时，触发 handleUserInput，触发后继续记录
+  function recordAndHandleGesture() {
+    gestureRecorder.recordDrawing().then(async (gestureData) => {
+      await handleUserInput(
+        userTask.value,
+        gestureData
+          .filter((item) => item.details.x !== undefined && item.details.y !== undefined)
+          .map((item) => {
+            return new Point(item.details.x!, item.details.y!, item.details.id)
+          })
+      )
+      // 递归调用以继续记录
+      recordAndHandleGesture()
+    })
+  }
 
-  document.addEventListener('contextmenu', (event) => {
-    event.preventDefault() // 阻止默认右键菜单
-
-    const log = tracker.getEventLog()
-    console.log('Log: ', log)
-
-    // 查看 detail，筛选出有 x，y 的，并且只获取
-    const filteredPoints = log
-      .filter((item) => item.details.x !== undefined && item.details.y !== undefined)
-      .map((item) => {
-        return new Point(item.details.x!, item.details.y!, item.details.id)
-      })
-    console.log(filteredPoints)
-    console.log('手势：', qDollarRecognizer.recognize(filteredPoints)) // 打印事件日志
-    tracker.clearEventLog()
-    tracker.resetDrawingIndex()
-  })
+  // 开始记录手势
+  recordAndHandleGesture()
 })
 
 // use key to enable multiple choice
@@ -102,8 +104,10 @@ onMounted(() => {
 
 async function handleClick(task: string, selectedElements: HTMLElement[]) {
   isLoading.value = true
-  await executeTask(task, selectedElements)
+  // await executeTask(task, selectedElements)
+  await handleUserInput(task, [])
   isLoading.value = false
+  userTask.value = ''
 }
 
 const isLoading = ref(false)
@@ -139,8 +143,8 @@ const routes = [
       <PromptInput
         textarea-default-prompt="Your command here."
         :loading="isLoading"
-        v-model="task"
-        @submit="handleClick(task, selectedElements)"
+        v-model="userTask"
+        @submit="handleClick(userTask, selectedElements)"
       ></PromptInput>
     </div>
 

@@ -13,6 +13,7 @@ export default defineNuxtConfig({
     temperature: 0,
     maxTokens: 0, // 0 means returns as many tokens as possible given the prompt and the model's maximum context size
     backendUrl: '',
+    maxRetries: 1,
     public: {
       streaming: false // Generate html page in streaming or direct mode
     }

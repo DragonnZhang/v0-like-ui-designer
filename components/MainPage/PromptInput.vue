@@ -15,7 +15,7 @@ const emit = defineEmits<{
   submit: [value: string]
 }>()
 
-let isComposing = false
+let isComposing: boolean = false
 
 function autoComplete(event: KeyboardEvent) {
   event.preventDefault()
@@ -52,7 +52,6 @@ function adjustInputHeight() {
   if (textarea) {
     textarea.style.height = 'auto'
     const scrollHeight = textarea.scrollHeight
-    console.log(scrollHeight)
     if (scrollHeight <= props.heightLimit) {
       textarea.style = `height: ${scrollHeight}px; overflow-y: hidden;`
     } else {
