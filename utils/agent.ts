@@ -134,13 +134,14 @@ const executeCodeToolNode = new ToolNode(executeCodeTools)
 // 根据交互行为生成代码 agent
 const generateCodeModel = model.bindTools!(executeCodeTools)
 const callGenerateCodeModel = async (state: typeof State.State) => {
-  const action = qDollarRecognizer.recognize(state.gestureData)
+  const { gestureData, domString } = state
+  const action = qDollarRecognizer.recognize(gestureData)
   const behavior = behaviorDefinitions.get(action.Name)
 
   console.log('behavior', behavior)
 
   const systemTemplate = `
-  Suppose you are a programmer and you need to generate executable js code to complete the user's task. 
+  Suppose you are a programmer and you need to generate executable js code based on the HTML structure and task instructions provided by the user. 
   You need to ensure that the code can directly achieve the user's task through eval execution. 
   The code format is: function f() {{ ... }} f(); Don't wrap the code with \`\`\`javascript markdown format.
 
@@ -150,9 +151,11 @@ const callGenerateCodeModel = async (state: typeof State.State) => {
 
   Pay Attention:
   1. Please return executable code string, without using markdown syntax like \`\`\`javascript.
+  2. When using dom api to select elements, make sure the corresponding elements exist, or the code will throw an error.
+  3. No comments allowed in the code because that will cause errors, implement all the codes, never use TODO.
   `
 
-  const humanTemplate = "User's task: {task}"
+  const humanTemplate = "User's task: {task}. DOM element: {domString}"
 
   const chatPrompt = ChatPromptTemplate.fromMessages([
     ['system', systemTemplate],
@@ -162,7 +165,8 @@ const callGenerateCodeModel = async (state: typeof State.State) => {
   const chain = chatPrompt.pipe(generateCodeModel)
 
   const response = await chain.invoke({
-    task: behavior
+    task: behavior,
+    domString
   })
 
   console.log('callGenerateCodeModel', response)
@@ -244,7 +248,8 @@ const State = Annotation.Root({
   userInput: Annotation<string>, // 用户输入的原始提示词
   gestureData: Annotation<Point[]>, // 用户手势数据
   code: Annotation<string>, // 生成的代码
-  action: Annotation<string> // 识别到的动作名称
+  action: Annotation<string>, // 识别到的动作名称
+  domString: Annotation<string> // dom 元素
 })
 
 const workflow = new StateGraph(State)
@@ -264,10 +269,11 @@ const workflow = new StateGraph(State)
 const app = workflow.compile()
 
 // 使用工作流
-export async function handleUserInput(userInput: string, gestureData: Point[]) {
+export async function handleUserInput(userInput: string, gestureData: Point[], domString: string) {
   const result = await app.invoke({
     userInput,
-    gestureData
+    gestureData,
+    domString
   })
 
   console.log('handleUserInput', result)

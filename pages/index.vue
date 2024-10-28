@@ -8,7 +8,7 @@ import {
   addBorderStyle,
   resetBorderStyle
 } from '~/utils/elementSelection'
-import { executeTask } from '~/utils/executeTask'
+import { executeTask, elementPreprocessing } from '~/utils/executeTask'
 import PromptInput from '~/components/MainPage/PromptInput.vue'
 import UserBehaviorTracker from '~/utils/behaviorRecord.js'
 import { QDollarRecognizer, Point } from '~/utils/qdollar'
@@ -55,7 +55,8 @@ onMounted(() => {
           .filter((item) => item.details.x !== undefined && item.details.y !== undefined)
           .map((item) => {
             return new Point(item.details.x!, item.details.y!, item.details.id)
-          })
+          }),
+        elementPreprocessing(selectedElements.value)
       )
       // 递归调用以继续记录
       recordAndHandleGesture()
@@ -105,7 +106,7 @@ onMounted(() => {
 async function handleClick(task: string, selectedElements: HTMLElement[]) {
   isLoading.value = true
   // await executeTask(task, selectedElements)
-  await handleUserInput(task, [])
+  await handleUserInput(task, [], elementPreprocessing(selectedElements))
   isLoading.value = false
   userTask.value = ''
 }

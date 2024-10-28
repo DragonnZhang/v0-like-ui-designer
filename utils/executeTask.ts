@@ -123,4 +123,4 @@ async function executeTask(task: string, selectedElements: HTMLElement[]) {
   executeCode(data)
 }
 
-export { executeTask }
+export { executeTask, elementPreprocessing }
