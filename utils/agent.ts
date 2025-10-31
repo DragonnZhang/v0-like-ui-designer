@@ -10,9 +10,8 @@ import { ChatPromptTemplate } from '@langchain/core/prompts'
 
 /**
  * TODO:
- * 1. 接受 dom 元素输入
- * 2. 想一个好的展示用例
- * 3. 接收键盘输入（不只是鼠标轨迹）
+ * 1. 想一个好的展示用例
+ * 2. 接收键盘输入（不只是鼠标轨迹）
  */
 
 // 交互行为定义库, key 为动作名称, value 为交互行为描述
